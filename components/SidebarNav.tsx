@@ -46,7 +46,7 @@ export const SidebarNav: React.FC = () => {
   };
 
   return (
-    <nav className="p-6 space-y-1">
+    <nav className="px-3 py-2 space-y-0.5">
       {menuItems.map((item) => {
         // Role check
         if (item.roles && (!userRole || !item.roles.includes(userRole))) {
@@ -59,16 +59,24 @@ export const SidebarNav: React.FC = () => {
           <Link
             key={item.label}
             href={item.href}
-            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-all font-medium group ${
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 group relative ${
               active 
-                ? 'bg-primary-container text-on-primary shadow-sm' 
-                : 'text-on-primary hover:bg-primary-container/50'
+                ? 'bg-white/15 text-on-primary font-semibold shadow-sm' 
+                : 'text-on-primary/65 hover:text-on-primary hover:bg-white/8 font-medium'
             }`}
           >
-            <item.icon className={`w-5 h-5 transition-colors ${
-              active ? 'text-on-primary' : 'text-on-primary/70 group-hover:text-on-primary'
-            }`} />
-            {item.label}
+            {/* Active indicator */}
+            {active && (
+              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-on-primary-container rounded-r-full" />
+            )}
+            <div className={`shrink-0 transition-all duration-150 ${
+              active 
+                ? 'text-on-primary' 
+                : 'text-on-primary/50 group-hover:text-on-primary/80'
+            }`}>
+              <item.icon className="w-4 h-4" />
+            </div>
+            <span className="text-sm">{item.label}</span>
           </Link>
         );
       })}

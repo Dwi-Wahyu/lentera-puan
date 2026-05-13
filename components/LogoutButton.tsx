@@ -7,10 +7,10 @@ export const LogoutButton = () => {
   return (
     <button 
       onClick={() => signOut({ callbackUrl: "/" })}
-      className="p-2 hover:bg-primary-container rounded-full transition-colors group" 
-      title="Keluar"
+      className="p-2 hover:bg-white/15 rounded-lg transition-colors group shrink-0" 
+      title="Keluar dari sistem"
     >
-      <LogOut className="w-5 h-5 text-on-primary/70 group-hover:text-on-primary" />
+      <LogOut className="w-4 h-4 text-on-primary/50 group-hover:text-on-primary transition-colors" />
     </button>
   );
 };

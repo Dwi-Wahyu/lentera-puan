@@ -77,35 +77,44 @@ export default function LoginPage() {
   if (status === "loading" || status === "authenticated") {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center">
-        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-surface flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-8">
+    <main className="min-h-screen bg-gradient-to-br from-surface via-surface-container-low to-surface-container flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Decorative background blobs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/3 rounded-full blur-3xl" />
+      </div>
+
+      <div className="w-full max-w-md space-y-6 relative z-10">
+        {/* Logo & Branding */}
         <div className="text-center">
-          <div className="flex justify-center mb-6">
-            <div className="relative w-24 h-24 bg-primary rounded-full flex items-center justify-center shadow-lg p-4">
+          <div className="flex justify-center mb-5">
+            <div className="relative w-20 h-20 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/30 ring-4 ring-primary/10">
               <Image
                 src="/logo.png"
                 alt="LenteraPuan Logo"
-                width={64}
-                height={64}
+                width={52}
+                height={52}
               />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-primary tracking-tight font-display">
+          <h1 className="text-2xl font-bold text-primary tracking-tight font-display">
             LenteraPuan
           </h1>
-          <p className="text-on-surface-variant mt-2 font-medium">
+          <p className="text-on-surface-variant mt-1 text-sm font-medium">
             Integrated Healthcare & Crisis Intervention
           </p>
         </div>
 
-        <Card className="shadow-xl border-t-4 border-t-primary">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Login Card */}
+        <Card className="shadow-xl shadow-primary/5 border-t-2 border-t-primary !rounded-2xl">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-4">
               <Input
                 label="Email / ID Pengguna"
@@ -128,31 +137,32 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <div className="bg-error-container text-on-error-container p-3 rounded-md text-sm font-medium">
+              <div className="bg-error/5 text-error border border-error/20 p-3 rounded-lg text-sm font-medium flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-error shrink-0" />
                 {error}
               </div>
             )}
 
             <div className="flex items-center justify-between">
-              <div className="flex items-center">
+              <div className="flex items-center gap-2">
                 <input
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 text-primary border-outline rounded"
+                  className="h-3.5 w-3.5 text-primary border-outline-variant rounded accent-primary"
                 />
                 <label
                   htmlFor="remember-me"
-                  className="ml-2 block text-sm text-on-surface"
+                  className="text-xs text-on-surface-variant font-medium"
                 >
                   Ingat saya
                 </label>
               </div>
 
-              <div className="text-sm">
+              <div className="text-xs">
                 <a
                   href="#"
-                  className="font-semibold text-primary hover:text-primary-container"
+                  className="font-semibold text-primary hover:text-primary/70 transition-colors"
                 >
                   Lupa kata sandi?
                 </a>
@@ -167,7 +177,7 @@ export default function LoginPage() {
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin" />
                   Memproses...
                 </>
               ) : (
@@ -178,10 +188,12 @@ export default function LoginPage() {
         </Card>
 
         {/* Demo Credentials Helper */}
-        <div className="bg-surface-container-low border border-outline-variant rounded-2xl p-4 shadow-sm space-y-4">
+        <div className="bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-4 shadow-sm space-y-3">
           <div className="flex items-center gap-2 text-primary">
-            <Key className="w-4 h-4" />
-            <h2 className="text-sm font-bold uppercase tracking-wider">
+            <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center">
+              <Key className="w-3.5 h-3.5" />
+            </div>
+            <h2 className="text-xs font-bold uppercase tracking-widest">
               Demo Credentials
             </h2>
           </div>
@@ -190,37 +202,36 @@ export default function LoginPage() {
               <button
                 key={user.email}
                 onClick={() => fillDemo(user.email)}
-                className="text-left p-2.5 rounded-xl border border-outline-variant hover:border-primary hover:bg-primary-container/20 transition-all group"
+                className="text-left p-2.5 rounded-lg border border-outline-variant/60 hover:border-primary hover:bg-primary/3 transition-all group"
                 title={`Login sebagai ${user.role}`}
               >
-                <p className="text-[10px] font-bold text-primary uppercase mb-0.5">
+                <p className="text-[9px] font-bold text-primary uppercase tracking-widest mb-1">
                   {user.label}
                 </p>
-                <p className="text-xs text-on-surface-variant group-hover:text-on-surface truncate">
+                <p className="text-xs text-on-surface-variant group-hover:text-on-surface truncate font-medium">
                   {user.email}
                 </p>
               </button>
             ))}
           </div>
-          <div className="flex items-start gap-2 p-2 bg-primary/5 rounded-lg border border-primary/10">
+          <div className="flex items-start gap-2 p-2.5 bg-primary/5 rounded-lg border border-primary/10">
             <Info className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
             <p className="text-[10px] text-on-surface-variant leading-relaxed">
-              Klik pada salah satu akun di atas untuk mengisi form secara
-              otomatis. Semua akun menggunakan password:{" "}
+              Klik salah satu akun untuk mengisi form otomatis. Password:{" "}
               <span className="font-bold text-primary">wahil123</span>
             </p>
           </div>
         </div>
 
-        <p className="text-center text-sm text-on-surface-variant">
+        <p className="text-center text-xs text-on-surface-variant">
           Butuh bantuan akses?{" "}
-          <a href="#" className="font-semibold text-primary">
+          <a href="#" className="font-semibold text-primary hover:underline">
             Hubungi IT Support
           </a>
         </p>
 
-        <div className="pt-4 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold uppercase tracking-wider">
+        <div className="text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/8 text-secondary border border-secondary/15 text-[10px] font-bold uppercase tracking-widest">
             <ShieldCheck className="w-3 h-3" />
             Secured by E2E Encryption
           </div>

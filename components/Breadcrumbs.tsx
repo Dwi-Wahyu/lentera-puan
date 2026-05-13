@@ -26,12 +26,12 @@ export const Breadcrumbs: React.FC = () => {
   };
 
   return (
-    <nav className="flex items-center gap-2 text-sm font-medium">
+    <nav className="flex items-center gap-1 text-sm font-medium">
       <Link 
         href="/dashboard" 
-        className="flex items-center gap-1.5 text-on-surface-variant hover:text-primary transition-colors"
+        className="flex items-center justify-center w-6 h-6 text-on-surface-variant hover:text-primary transition-colors"
       >
-        <Home className="w-4 h-4" />
+        <Home className="w-3.5 h-3.5" />
       </Link>
 
       {pathSegments.map((segment, index) => {
@@ -44,13 +44,13 @@ export const Breadcrumbs: React.FC = () => {
 
         return (
           <React.Fragment key={href}>
-            <ChevronRight className="w-4 h-4 text-outline-variant" />
+            <ChevronRight className="w-3 h-3 text-outline-variant/60" />
             <Link
               href={href}
-              className={`transition-colors ${
+              className={`transition-colors text-xs ${
                 isLast 
-                  ? 'text-primary font-bold cursor-default pointer-events-none' 
-                  : 'text-on-surface-variant hover:text-primary'
+                  ? 'text-primary font-semibold cursor-default pointer-events-none bg-primary/8 px-2 py-0.5 rounded-md' 
+                  : 'text-on-surface-variant hover:text-primary px-1'
               }`}
             >
               {label}

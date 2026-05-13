@@ -51,17 +51,21 @@ export const CheckupForm: React.FC<CheckupFormProps> = ({
   }
 
   return (
-    <Card className="shadow-lg border-t-4 border-t-primary">
+    <Card className="shadow-sm border-t-2 border-t-primary !rounded-2xl">
       <form action={handleSubmit} className="space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="md:col-span-2 flex items-center gap-2 text-primary border-b border-outline-variant pb-2">
-            <Stethoscope className="w-5 h-5" />
-            <h2 className="font-bold uppercase tracking-wider text-sm">Data Klinis Pemeriksaan</h2>
+        {/* Section Header */}
+        <div className="flex items-center gap-2.5 pb-4 border-b border-outline-variant/50">
+          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Stethoscope className="w-4 h-4 text-primary" />
           </div>
-          
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-semibold text-on-surface flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-on-surface-variant" /> Tanggal Pemeriksaan
+          <h2 className="font-bold text-sm text-on-surface uppercase tracking-widest">Data Klinis Pemeriksaan</h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* Date Field */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] font-bold text-on-surface uppercase tracking-widest flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5 text-on-surface-variant" /> Tanggal Pemeriksaan
             </label>
             <input 
               type="date" 
@@ -69,20 +73,21 @@ export const CheckupForm: React.FC<CheckupFormProps> = ({
               defaultValue={defaultDate}
               required 
               disabled={isPending}
-              className="px-4 py-2 border rounded bg-surface-container-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all border-outline-variant"
+              className="px-4 py-2.5 border border-outline-variant/70 rounded-lg bg-surface-container-lowest text-on-surface text-sm transition-all hover:border-outline focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50"
             />
           </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-semibold text-on-surface flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-on-surface-variant" /> Status Gizi / Hasil
+          {/* Status Field */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] font-bold text-on-surface uppercase tracking-widest flex items-center gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5 text-on-surface-variant" /> Status Gizi / Hasil
             </label>
             <select 
               name="status" 
               defaultValue={initialData?.status || ""}
               required 
               disabled={isPending}
-              className="px-4 py-2 border rounded bg-surface-container-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all border-outline-variant"
+              className="px-4 py-2.5 border border-outline-variant/70 rounded-lg bg-surface-container-lowest text-on-surface text-sm transition-all hover:border-outline focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 appearance-none"
             >
               <option value="">Pilih Status</option>
               <option value="NORMAL">Normal</option>
@@ -92,9 +97,10 @@ export const CheckupForm: React.FC<CheckupFormProps> = ({
             </select>
           </div>
 
-          <div className="md:col-span-2 flex flex-col gap-1">
-            <label className="text-sm font-semibold text-on-surface flex items-center gap-2">
-              <FileText className="w-4 h-4 text-on-surface-variant" /> Catatan Medis & Tindak Lanjut
+          {/* Notes Field */}
+          <div className="md:col-span-2 flex flex-col gap-1.5">
+            <label className="text-[10px] font-bold text-on-surface uppercase tracking-widest flex items-center gap-1.5">
+              <FileText className="w-3.5 h-3.5 text-on-surface-variant" /> Catatan Medis & Tindak Lanjut
             </label>
             <textarea 
               name="notes" 
@@ -102,31 +108,33 @@ export const CheckupForm: React.FC<CheckupFormProps> = ({
               defaultValue={initialData?.notes || ""}
               placeholder="Masukkan detail hasil pemeriksaan..."
               disabled={isPending}
-              className="px-4 py-2 border rounded bg-surface-container-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all border-outline-variant resize-none"
-            ></textarea>
+              className="px-4 py-2.5 border border-outline-variant/70 rounded-lg bg-surface-container-lowest text-on-surface text-sm transition-all hover:border-outline focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 resize-none placeholder:text-outline-variant/70"
+            />
           </div>
         </div>
 
+        {/* Error Message */}
         {error && (
-          <div className="bg-error-container text-on-error-container p-4 rounded-lg text-sm font-medium flex items-center gap-3">
-            <AlertCircle className="w-5 h-5" />
+          <div className="bg-error/5 text-error border border-error/20 p-3.5 rounded-lg text-sm font-medium flex items-center gap-3">
+            <AlertCircle className="w-4.5 h-4.5 shrink-0" />
             {error}
           </div>
         )}
 
-        <div className="flex items-center justify-end gap-4 pt-4 border-t border-outline-variant">
+        {/* Actions */}
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-outline-variant/50">
           <Link href={cancelHref}>
-            <Button variant="ghost" type="button" disabled={isPending}>Batal</Button>
+            <Button variant="ghost" type="button" size="sm" disabled={isPending}>Batal</Button>
           </Link>
-          <Button type="submit" className="gap-2 px-8" disabled={isPending}>
+          <Button type="submit" size="sm" className="gap-2 px-6" disabled={isPending}>
             {isPending ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 Menyimpan...
               </>
             ) : (
               <>
-                <Save className="w-4 h-4" /> {initialData ? 'Update Pemeriksaan' : 'Simpan Pemeriksaan'}
+                <Save className="w-3.5 h-3.5" /> {initialData ? 'Update Pemeriksaan' : 'Simpan Pemeriksaan'}
               </>
             )}
           </Button>

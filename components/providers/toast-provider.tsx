@@ -48,7 +48,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   return (
     <ToastContext.Provider value={{ success, error, info }}>
       {children}
-      <div className="fixed bottom-10 right-10 z-[100] flex flex-col gap-4 max-w-sm w-full">
+      <div className="fixed bottom-6 right-6 z-[100] flex flex-col gap-3 max-w-sm w-full">
         {toasts.map((toast) => (
           <ToastItem key={toast.id} toast={toast} onRemove={() => removeToast(toast.id)} />
         ))}
@@ -85,24 +85,24 @@ const ToastItem: React.FC<{ toast: Toast; onRemove: () => void }> = ({ toast, on
   const v = variants[toast.type];
 
   return (
-    <div className={`flex flex-col bg-surface-container-lowest border ${v.border} rounded-xl shadow-2xl overflow-hidden animate-in slide-in-from-right-full duration-300`}>
-      <div className="flex items-start p-4 gap-4">
-        <div className={`flex-shrink-0 w-10 h-10 rounded-full ${v.iconContainer} flex items-center justify-center`}>
-          <v.LucideIcon className={`w-6 h-6 ${v.icon}`} />
+    <div className={`flex flex-col bg-surface-container-lowest border ${v.border} rounded-xl shadow-xl shadow-black/10 overflow-hidden animate-in slide-in-from-right-4 duration-300`}>
+      <div className="flex items-start p-4 gap-3">
+        <div className={`flex-shrink-0 w-8 h-8 rounded-lg ${v.iconContainer} flex items-center justify-center mt-0.5`}>
+          <v.LucideIcon className={`w-4 h-4 ${v.icon}`} />
         </div>
-        <div className="flex-grow pt-0.5">
-          <h4 className={`font-bold text-sm leading-tight ${toast.type === 'error' ? 'text-error' : toast.type === 'info' ? 'text-primary' : 'text-on-surface'}`}>
+        <div className="flex-grow min-w-0">
+          <h4 className={`font-semibold text-sm leading-tight ${toast.type === 'error' ? 'text-error' : toast.type === 'info' ? 'text-primary' : 'text-on-surface'}`}>
             {toast.title}
           </h4>
-          <p className="text-xs text-on-surface-variant mt-1">
+          <p className="text-xs text-on-surface-variant mt-0.5 leading-relaxed">
             {toast.message}
           </p>
         </div>
-        <button onClick={onRemove} className="flex-shrink-0 text-outline hover:text-on-surface-variant transition-colors p-1">
-          <X className="w-5 h-5" />
+        <button onClick={onRemove} className="flex-shrink-0 p-1 text-outline hover:text-on-surface-variant hover:bg-surface-container rounded-md transition-colors mt-0.5">
+          <X className="w-3.5 h-3.5" />
         </button>
       </div>
-      <div className={`h-1 ${v.progress} w-full opacity-30 animate-progress-shrink origin-left`}></div>
+      <div className={`h-0.5 ${v.progress} w-full opacity-40 animate-progress-shrink origin-left`}></div>
     </div>
   );
 };
