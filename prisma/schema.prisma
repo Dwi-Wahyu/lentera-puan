@@ -1,0 +1,197 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String                @id @default(cuid())
+  name          String?
+  email         String?               @unique
+  password      String?
+  role          String                @default("BIDAN")
+  nip           String?               @unique
+  unit          String?
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  accounts      Account[]
+  reports       CrisisReport[]
+  interventions InterventionSession[]
+  sessions      Session[]
+  distributions Distribution[]
+  auditLogs     AuditLog[]
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  resource  String?
+  details   String?  @db.Text
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId], map: "Account_userId_fkey")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "Session_userId_fkey")
+}
+
+model Patient {
+  id              String           @id @default(cuid())
+  name            String
+  nik             String           @unique
+  category        String
+  lastCheckup     DateTime?
+  nutritionStatus String?          @default("NORMAL")
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  crisisReports   CrisisReport[]
+  checkups        MedicalCheckup[]
+}
+
+model MedicalCheckup {
+  id        String   @id @default(cuid())
+  patientId String
+  date      DateTime @default(now())
+  notes     String?  @db.Text
+  status    String
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([patientId], map: "MedicalCheckup_patientId_fkey")
+}
+
+model CrisisReport {
+  id             String             @id @default(cuid())
+  patientId      String?
+  reporterId     String
+  safeHouseId    String?
+  date           DateTime           @default(now())
+  victimInitials String
+  type           String
+  status         String             @default("BARU")
+  priority       String             @default("MEDIUM")
+  description    String?            @db.Text
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  patient        Patient?           @relation(fields: [patientId], references: [id])
+  reporter       User               @relation(fields: [reporterId], references: [id])
+  safeHouse      SafeHouse?         @relation(fields: [safeHouseId], references: [id])
+  evidences      Evidence[]
+  logs           InvestigationLog[]
+
+  @@index([patientId], map: "CrisisReport_patientId_fkey")
+  @@index([reporterId], map: "CrisisReport_reporterId_fkey")
+  @@index([safeHouseId], map: "CrisisReport_safeHouseId_fkey")
+}
+
+model Evidence {
+  id       String       @id @default(cuid())
+  reportId String
+  url      String
+  type     String
+  report   CrisisReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@index([reportId], map: "Evidence_reportId_fkey")
+}
+
+model InvestigationLog {
+  id        String       @id @default(cuid())
+  reportId  String
+  action    String
+  notes     String?      @db.Text
+  createdAt DateTime     @default(now())
+  report    CrisisReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@index([reportId], map: "InvestigationLog_reportId_fkey")
+}
+
+model SafeHouse {
+  id          String         @id @default(cuid())
+  name        String
+  capacity    Int
+  occupied    Int            @default(0)
+  status      String         @default("TERSEDIA")
+  safetyLevel String         @default("MEDIUM")
+  location    String?
+  residents   CrisisReport[]
+}
+
+model InterventionSession {
+  id          String   @id @default(cuid())
+  patientId   String?
+  counselorId String
+  date        DateTime
+  time        String
+  type        String
+  status      String   @default("MENDATANG")
+  counselor   User     @relation(fields: [counselorId], references: [id])
+
+  @@index([counselorId], map: "InterventionSession_counselorId_fkey")
+}
+
+model Logistic {
+  id            String         @id @default(cuid())
+  name          String
+  stock         Int
+  unit          String
+  status        String
+  updatedAt     DateTime       @updatedAt
+  distributions Distribution[]
+}
+
+model SystemConfig {
+  id              String   @id @default(cuid())
+  agencyName      String   @default("Dinas Pemberdayaan Perempuan & Perlindungan Anak")
+  region          String   @default("Provinsi DKI Jakarta - Sektor Selatan")
+  maintenanceMode Boolean  @default(false)
+  updatedAt       DateTime @updatedAt
+}
+
+model Distribution {
+  id         String   @id @default(cuid())
+  logisticId String
+  quantity   Int
+  recipient  String
+  staffId    String
+  date       DateTime @default(now())
+
+  logistic Logistic @relation(fields: [logisticId], references: [id], onDelete: Cascade)
+  staff    User     @relation(fields: [staffId], references: [id])
+
+  @@index([logisticId])
+  @@index([staffId])
+}
