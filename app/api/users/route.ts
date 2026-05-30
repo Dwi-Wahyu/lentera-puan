@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     if (role === 'counselor') {
       where = {
         role: {
-          in: ['BIDAN', 'PSIKOLOG', 'DP3A']
+          in: ['PSIKOLOG', 'DP3A']
         }
       };
     }

@@ -6,6 +6,7 @@ import { CheckCircle2, XCircle, Trash2, Loader2, AlertCircle } from 'lucide-reac
 import { updateSessionStatus, deleteSession } from './actions';
 import { AlertDialog } from '@/components/AlertDialog';
 import { useToast } from '@/components/providers/toast-provider';
+import { useRouter } from 'next/navigation';
 
 interface SessionActionsProps {
   sessionId: string;
@@ -14,6 +15,7 @@ interface SessionActionsProps {
 
 export const SessionActions: React.FC<{ sessionId: string }> = ({ sessionId }) => {
   const toast = useToast();
+  const router = useRouter();
   const [isAlertDeleteOpen, setIsAlertDeleteOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
@@ -27,6 +29,7 @@ export const SessionActions: React.FC<{ sessionId: string }> = ({ sessionId }) =
       setIsAlertDeleteOpen(false);
     } else {
       toast.success('Berhasil', 'Jadwal sesi telah dihapus dari sistem.');
+      router.push('/dashboard/konseling');
     }
   };
 

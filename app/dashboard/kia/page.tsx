@@ -2,14 +2,7 @@ import React from "react";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
-import {
-  Plus,
-  Search,
-  FileText,
-  Baby,
-  Users,
-  AlertCircle,
-} from "lucide-react";
+import { Plus, Search, FileText, Baby, Users, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatEnum } from "@/lib/formatters";
@@ -53,24 +46,36 @@ export default async function KIAPage() {
           <div className="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center mb-3">
             <Users className="w-4 h-4 text-on-primary" />
           </div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-on-primary/70">Total Ibu Hamil</p>
-          <p className="text-3xl font-bold mt-1 text-on-primary leading-none">{pregnantCount}</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-on-primary/70">
+            Total Ibu Hamil
+          </p>
+          <p className="text-3xl font-bold mt-1 text-on-primary leading-none">
+            {pregnantCount}
+          </p>
         </div>
         <div className="bg-secondary rounded-xl p-5 shadow-md shadow-secondary/20 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none rounded-xl" />
           <div className="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center mb-3">
             <Baby className="w-4 h-4 text-on-secondary" />
           </div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-on-secondary/70">Balita Terpantau</p>
-          <p className="text-3xl font-bold mt-1 text-on-secondary leading-none">{childrenCount}</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-on-secondary/70">
+            Balita Terpantau
+          </p>
+          <p className="text-3xl font-bold mt-1 text-on-secondary leading-none">
+            {childrenCount}
+          </p>
         </div>
         <div className="bg-error rounded-xl p-5 shadow-md shadow-error/20 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none rounded-xl" />
           <div className="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center mb-3">
             <AlertCircle className="w-4 h-4 text-on-error" />
           </div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-on-error/70">Risiko Stunting</p>
-          <p className="text-3xl font-bold mt-1 text-on-error leading-none">{stuntingRiskCount}</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-on-error/70">
+            Risiko Stunting
+          </p>
+          <p className="text-3xl font-bold mt-1 text-on-error leading-none">
+            {stuntingRiskCount}
+          </p>
         </div>
       </div>
 
@@ -145,7 +150,9 @@ export default async function KIAPage() {
                           <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0">
                             {patient.name.charAt(0)}
                           </div>
-                          <span className="font-semibold text-on-surface">{patient.name}</span>
+                          <span className="font-semibold text-on-surface">
+                            {patient.name}
+                          </span>
                         </div>
                       </td>
                       <td className="py-3.5 px-3 text-xs text-on-surface-variant font-medium">
@@ -153,7 +160,9 @@ export default async function KIAPage() {
                       </td>
                       <td className="py-3.5 px-3 text-xs text-on-surface-variant">
                         {patient.lastCheckup?.toLocaleDateString("id-ID") || (
-                          <span className="text-outline-variant italic">Belum ada</span>
+                          <span className="text-outline-variant italic">
+                            Belum ada
+                          </span>
                         )}
                       </td>
                       <td className="py-3.5 px-3">
@@ -173,7 +182,7 @@ export default async function KIAPage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="gap-2 group-hover:bg-primary group-hover:text-on-primary transition-all"
+                            className="gap-2 cursor-pointer hover:bg-primary transition-all"
                           >
                             <FileText className="w-3 h-3" /> Rekam Medis
                           </Button>
@@ -189,8 +198,12 @@ export default async function KIAPage() {
                           <Baby className="w-6 h-6 text-outline-variant" />
                         </div>
                         <div>
-                          <p className="text-sm font-semibold text-on-surface-variant">Belum ada data pasien</p>
-                          <p className="text-xs text-outline-variant mt-0.5">Tambahkan pasien pertama Anda</p>
+                          <p className="text-sm font-semibold text-on-surface-variant">
+                            Belum ada data pasien
+                          </p>
+                          <p className="text-xs text-outline-variant mt-0.5">
+                            Tambahkan pasien pertama Anda
+                          </p>
                         </div>
                       </div>
                     </td>

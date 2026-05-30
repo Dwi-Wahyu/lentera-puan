@@ -85,7 +85,6 @@ export const UserFormClient: React.FC<UserFormClientProps> = ({ onSubmit }) => {
               className="px-4 py-2 border rounded bg-surface-container-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary transition-all border-outline-variant"
             >
               <option value="">Pilih Peran</option>
-              <option value="BIDAN">Bidan</option>
               <option value="PSIKOLOG">Psikolog</option>
               <option value="DP3A">Petugas DP3A</option>
               <option value="ADMIN">Administrator</option>

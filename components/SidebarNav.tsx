@@ -28,7 +28,6 @@ export const menuItems: MenuItem[] = [
   { icon: AlertTriangle, label: 'Pelaporan Krisis', href: '/dashboard/krisis' },
   { icon: ShieldCheck, label: 'Rumah Aman', href: '/dashboard/safehouse' },
   { icon: Calendar, label: 'Jadwal Konseling', href: '/dashboard/konseling' },
-  { icon: Package, label: 'Logistik PMT', href: '/dashboard/logistik' },
   { icon: Users, label: 'Manajemen User', href: '/dashboard/users', roles: ['ADMIN'] },
   { icon: Settings, label: 'Pengaturan', href: '/dashboard/settings', roles: ['ADMIN'] },
 ];

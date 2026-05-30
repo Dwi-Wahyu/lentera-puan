@@ -41,5 +41,5 @@ export async function createCheckup(patientId: string, formData: FormData) {
 
   revalidatePath(`/dashboard/kia/${patientId}`);
   revalidatePath("/dashboard/kia");
-  redirect(`/dashboard/kia/${patientId}`);
+  return { success: true };
 }

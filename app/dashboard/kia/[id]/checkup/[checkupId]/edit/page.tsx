@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/Button';
+import { Card } from '@/components/Card';
 import { ArrowLeft, User, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { CheckupForm } from '@/components/CheckupForm';
 import { updateCheckup } from '../actions';
+import { useToast } from '@/components/providers/toast-provider';
 
 interface Checkup {
   date: string;
@@ -14,10 +16,45 @@ interface Checkup {
   notes: string | null;
 }
 
+const SkeletonCheckup = () => (
+  <div className="max-w-3xl mx-auto space-y-6 animate-pulse">
+    <div className="flex items-center gap-4">
+      <div className="w-9 h-9 bg-surface-container rounded-lg" />
+      <div className="space-y-2">
+        <div className="h-8 w-48 bg-surface-container rounded-md" />
+        <div className="h-4 w-32 bg-surface-container rounded-md" />
+      </div>
+    </div>
+    <Card className="p-8 space-y-8 shadow-lg border-t-2 border-t-outline-variant">
+      <div className="h-6 w-40 bg-surface-container rounded-md mb-6" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-2">
+          <div className="h-4 w-32 bg-surface-container rounded-md" />
+          <div className="h-10 w-full bg-surface-container rounded-md" />
+        </div>
+        <div className="space-y-2">
+          <div className="h-4 w-32 bg-surface-container rounded-md" />
+          <div className="h-10 w-full bg-surface-container rounded-md" />
+        </div>
+        <div className="md:col-span-2 space-y-2">
+          <div className="h-4 w-32 bg-surface-container rounded-md" />
+          <div className="h-32 w-full bg-surface-container rounded-md" />
+        </div>
+      </div>
+      <div className="flex justify-end gap-4 pt-4 border-t border-outline-variant">
+        <div className="h-9 w-20 bg-surface-container rounded-md" />
+        <div className="h-9 w-40 bg-surface-container rounded-md" />
+      </div>
+    </Card>
+  </div>
+);
+
 export default function EditCheckupPage() {
   const params = useParams();
   const patientId = params.id as string;
   const checkupId = params.checkupId as string;
+  const router = useRouter();
+  const toast = useToast();
   
   const [checkup, setCheckup] = useState<Checkup | null>(null);
 
@@ -31,14 +68,15 @@ export default function EditCheckupPage() {
   }, [checkupId]);
 
   async function handleUpdate(formData: FormData) {
-    return await updateCheckup(patientId, checkupId, formData);
+    const result = await updateCheckup(patientId, checkupId, formData);
+    if (!result?.error) {
+      // Toast is handled in CheckupForm, we just need to redirect
+      router.push(`/dashboard/kia/${patientId}/checkup/${checkupId}`);
+    }
+    return result;
   }
 
-  if (!checkup) return (
-    <div className="min-h-[400px] flex items-center justify-center">
-      <Loader2 className="w-8 h-8 animate-spin text-primary" />
-    </div>
-  );
+  if (!checkup) return <SkeletonCheckup />;
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">

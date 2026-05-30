@@ -16,7 +16,6 @@ export const Breadcrumbs: React.FC = () => {
     krisis: 'Crisis',
     safehouse: 'Safe House',
     konseling: 'Counseling',
-    logistik: 'Logistics',
     users: 'Users',
     settings: 'Settings',
     new: 'Tambah Baru',

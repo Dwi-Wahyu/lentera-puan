@@ -57,7 +57,7 @@ export async function updateCheckup(patientId: string, checkupId: string, formDa
 
   revalidatePath(`/dashboard/kia/${patientId}`);
   revalidatePath(`/dashboard/kia/${patientId}/checkup/${checkupId}`);
-  redirect(`/dashboard/kia/${patientId}/checkup/${checkupId}`);
+  return { success: true };
 }
 
 export async function deleteCheckup(patientId: string, checkupId: string) {
@@ -72,5 +72,5 @@ export async function deleteCheckup(patientId: string, checkupId: string) {
   }
 
   revalidatePath(`/dashboard/kia/${patientId}`);
-  redirect(`/dashboard/kia/${patientId}`);
+  return { success: true };
 }

@@ -12,7 +12,7 @@ model User {
   name          String?
   email         String?               @unique
   password      String?
-  role          String                @default("BIDAN")
+  role          String                @default("DP3A")
   nip           String?               @unique
   unit          String?
   emailVerified DateTime?
@@ -23,7 +23,6 @@ model User {
   reports       CrisisReport[]
   interventions InterventionSession[]
   sessions      Session[]
-  distributions Distribution[]
   auditLogs     AuditLog[]
 }
 
@@ -163,16 +162,6 @@ model InterventionSession {
   @@index([counselorId], map: "InterventionSession_counselorId_fkey")
 }
 
-model Logistic {
-  id            String         @id @default(cuid())
-  name          String
-  stock         Int
-  unit          String
-  status        String
-  updatedAt     DateTime       @updatedAt
-  distributions Distribution[]
-}
-
 model SystemConfig {
   id              String   @id @default(cuid())
   agencyName      String   @default("Dinas Pemberdayaan Perempuan & Perlindungan Anak")
@@ -181,17 +170,3 @@ model SystemConfig {
   updatedAt       DateTime @updatedAt
 }
 
-model Distribution {
-  id         String   @id @default(cuid())
-  logisticId String
-  quantity   Int
-  recipient  String
-  staffId    String
-  date       DateTime @default(now())
-
-  logistic Logistic @relation(fields: [logisticId], references: [id], onDelete: Cascade)
-  staff    User     @relation(fields: [staffId], references: [id])
-
-  @@index([logisticId])
-  @@index([staffId])
-}

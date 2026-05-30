@@ -9,10 +9,10 @@ import { ShieldCheck, Loader2, Key, Info } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/providers/toast-provider";
+import LoadingDashboard from "./dashboard/loading";
 
 const demoUsers = [
   { role: "Super Admin", email: "admin@lp.go.id", label: "Admin" },
-  { role: "Bidan / Nakes", email: "siti@lp.go.id", label: "Bidan" },
   { role: "Petugas DP3A", email: "wahil@lp.go.id", label: "DP3A" },
   { role: "Psikolog Klinis", email: "ahmad@lp.go.id", label: "Psikolog" },
 ];
@@ -76,8 +76,16 @@ export default function LoginPage() {
 
   if (status === "loading" || status === "authenticated") {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="flex min-h-screen bg-surface">
+        {/* Sidebar Mock for Skeleton */}
+        <div className="hidden lg:block w-72 bg-primary shrink-0 opacity-5" />
+        <div className="flex-1 flex flex-col min-w-0">
+          {/* Header Mock for Skeleton */}
+          <div className="h-16 border-b border-outline-variant bg-surface-container-lowest" />
+          <main className="flex-1 p-5 lg:p-8">
+            <LoadingDashboard />
+          </main>
+        </div>
       </div>
     );
   }

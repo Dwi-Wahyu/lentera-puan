@@ -7,6 +7,7 @@ import { deleteCheckup } from './actions';
 import { useToast } from '@/components/providers/toast-provider';
 import Link from 'next/link';
 import { AlertDialog } from '@/components/AlertDialog';
+import { useRouter } from 'next/navigation';
 
 interface CheckupActionsProps {
   patientId: string;
@@ -15,6 +16,7 @@ interface CheckupActionsProps {
 
 export const CheckupActions: React.FC<CheckupActionsProps> = ({ patientId, checkupId }) => {
   const toast = useToast();
+  const router = useRouter();
   const [isPending, setIsPending] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
@@ -28,6 +30,7 @@ export const CheckupActions: React.FC<CheckupActionsProps> = ({ patientId, check
       setIsAlertOpen(false);
     } else {
       toast.success('Berhasil', 'Data pemeriksaan telah berhasil dihapus.');
+      router.push(`/dashboard/kia/${patientId}`);
     }
   };
 

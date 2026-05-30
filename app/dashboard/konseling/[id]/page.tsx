@@ -1,23 +1,23 @@
-import React from 'react';
+import React from "react";
 import { prisma } from "@/lib/prisma";
-import { Card } from '@/components/Card';
-import { Button } from '@/components/Button';
-import { 
-  ArrowLeft, 
-  Calendar, 
-  Clock, 
-  ClipboardList, 
-  CheckCircle2, 
+import { Card } from "@/components/Card";
+import { Button } from "@/components/Button";
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  ClipboardList,
+  CheckCircle2,
   BadgeCheck,
   Stethoscope,
   Printer,
   Share2,
-  FileText
-} from 'lucide-react';
-import Link from 'next/link';
+  FileText,
+} from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { SessionActions, SessionStatusButtons } from './SessionActions';
-import { formatEnum } from '@/lib/formatters';
+import { SessionActions, SessionStatusButtons } from "./SessionActions";
+import { formatEnum } from "@/lib/formatters";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -27,7 +27,7 @@ export default async function SessionDetailPage({ params }: PageProps) {
   const { id } = await params;
   const session = await prisma.interventionSession.findUnique({
     where: { id },
-    include: { counselor: true }
+    include: { counselor: true },
   });
 
   if (!session) {
@@ -40,15 +40,25 @@ export default async function SessionDetailPage({ params }: PageProps) {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Link href="/dashboard/konseling">
-            <Button variant="ghost" size="sm" className="p-2 h-10 w-10 rounded-full border border-outline-variant">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="p-2 h-10 w-10 rounded-full border border-outline-variant"
+            >
               <ArrowLeft className="w-5 h-5" />
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl lg:text-3xl font-bold text-on-surface">Detail Sesi Konseling</h1>
+            <h1 className="text-2xl lg:text-3xl font-bold text-on-surface">
+              Detail Sesi Konseling
+            </h1>
             <p className="text-on-surface-variant flex items-center gap-2 text-sm font-medium">
               <Calendar className="w-4 h-4 text-primary" />
-              {session.date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+              {session.date.toLocaleDateString("id-ID", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
             </p>
           </div>
         </div>
@@ -69,24 +79,40 @@ export default async function SessionDetailPage({ params }: PageProps) {
         <div className="md:col-span-4 space-y-6">
           <Card className="border-t-4 border-t-primary shadow-md">
             <div className="space-y-6 text-center">
-              <div className={`mx-auto w-20 h-20 rounded-full flex items-center justify-center shadow-inner ${
-                session.status === 'SELESAI' ? 'bg-secondary-container text-secondary' : 'bg-primary-container text-primary'
-              }`}>
-                {session.status === 'SELESAI' ? <CheckCircle2 className="w-10 h-10" /> : <Clock className="w-10 h-10" />}
+              <div
+                className={`mx-auto w-20 h-20 rounded-full flex items-center justify-center shadow-inner ${
+                  session.status === "SELESAI"
+                    ? "bg-secondary-container text-secondary"
+                    : "bg-primary-container text-white"
+                }`}
+              >
+                {session.status === "SELESAI" ? (
+                  <CheckCircle2 className="w-10 h-10" />
+                ) : (
+                  <Clock className="w-10 h-10" />
+                )}
               </div>
-              
+
               <div>
-                <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.2em]">Status Saat Ini</p>
-                <h3 className="text-2xl font-black text-on-surface mt-1">{formatEnum(session.status)}</h3>
+                <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.2em]">
+                  Status Saat Ini
+                </p>
+                <h3 className="text-2xl font-black text-on-surface mt-1">
+                  {formatEnum(session.status)}
+                </h3>
               </div>
 
               <SessionStatusButtons sessionId={id} status={session.status} />
             </div>
           </Card>
 
-          <Card title="Peringatan Keamanan" className="bg-error-container/5 border-dashed">
+          <Card
+            title="Peringatan Keamanan"
+            className="bg-error-container/5 border-dashed"
+          >
             <p className="text-xs text-on-surface-variant leading-relaxed italic">
-              Sesi ini mengandung data sensitif. Hanya personil terverifikasi yang diperbolehkan melihat detail kronologi dan hasil intervensi.
+              Sesi ini mengandung data sensitif. Hanya personil terverifikasi
+              yang diperbolehkan melihat detail kronologi dan hasil intervensi.
             </p>
           </Card>
         </div>
@@ -101,9 +127,15 @@ export default async function SessionDetailPage({ params }: PageProps) {
                     <Clock className="w-6 h-6" />
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Waktu Pelaksanaan</label>
-                    <p className="text-lg font-bold text-on-surface">{session.time} WIB</p>
-                    <p className="text-xs text-on-surface-variant mt-1">Durasi standar 60 menit</p>
+                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
+                      Waktu Pelaksanaan
+                    </label>
+                    <p className="text-lg font-bold text-on-surface">
+                      {session.time} WIB
+                    </p>
+                    <p className="text-xs text-on-surface-variant mt-1">
+                      Durasi standar 60 menit
+                    </p>
                   </div>
                 </div>
 
@@ -112,9 +144,15 @@ export default async function SessionDetailPage({ params }: PageProps) {
                     <ClipboardList className="w-6 h-6" />
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Tipe Intervensi</label>
-                    <p className="text-lg font-bold text-on-surface">{formatEnum(session.type)}</p>
-                    <p className="text-xs text-on-surface-variant mt-1">Metoditas: Klinis Tatap Muka</p>
+                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
+                      Tipe Intervensi
+                    </label>
+                    <p className="text-lg font-bold text-on-surface">
+                      {formatEnum(session.type)}
+                    </p>
+                    <p className="text-xs text-on-surface-variant mt-1">
+                      Metoditas: Klinis Tatap Muka
+                    </p>
                   </div>
                 </div>
               </div>
@@ -123,14 +161,22 @@ export default async function SessionDetailPage({ params }: PageProps) {
                 <Stethoscope className="absolute -right-4 -bottom-4 w-32 h-32 opacity-10 group-hover:scale-110 transition-transform duration-500" />
                 <div className="relative z-10 space-y-4">
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest opacity-70">Pendamping / Konselor</p>
-                    <p className="text-xl font-black mt-1 leading-tight">{session.counselor.name}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest opacity-70">
+                      Pendamping / Konselor
+                    </p>
+                    <p className="text-xl font-black mt-1 leading-tight">
+                      {session.counselor.name}
+                    </p>
                   </div>
                   <div className="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-lg backdrop-blur-sm border border-white/10 w-fit">
                     <BadgeCheck className="w-4 h-4 text-secondary-fixed" />
-                    <span className="text-xs font-bold uppercase">{formatEnum(session.counselor.role)}</span>
+                    <span className="text-xs font-bold uppercase">
+                      {formatEnum(session.counselor.role)}
+                    </span>
                   </div>
-                  <p className="text-[10px] opacity-60">ID Petugas: {session.counselor.id.slice(-8).toUpperCase()}</p>
+                  <p className="text-[10px] opacity-60">
+                    ID Petugas: {session.counselor.id.slice(-8).toUpperCase()}
+                  </p>
                 </div>
               </div>
             </div>
@@ -141,7 +187,9 @@ export default async function SessionDetailPage({ params }: PageProps) {
               </h4>
               <div className="p-6 bg-surface-container-low rounded-2xl border border-outline-variant/50 min-h-[160px]">
                 <p className="text-sm text-on-surface-variant italic">
-                  Belum ada catatan medis yang diinput untuk sesi ini. Silakan gunakan tombol &quot;Selesaikan Sesi&quot; untuk memasukkan laporan hasil pendampingan.
+                  Belum ada catatan medis yang diinput untuk sesi ini. Silakan
+                  gunakan tombol &quot;Selesaikan Sesi&quot; untuk memasukkan
+                  laporan hasil pendampingan.
                 </p>
               </div>
             </div>

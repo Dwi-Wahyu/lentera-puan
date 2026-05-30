@@ -48,10 +48,10 @@ export default async function UsersPage() {
             <div className="relative">
               <select className="pl-4 pr-4 py-2 border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary appearance-none min-w-[160px] text-sm font-medium">
                 <option value="">Semua Peran</option>
-                <option value="BIDAN">Bidan</option>
                 <option value="DP3A">Petugas DP3A</option>
                 <option value="PSIKOLOG">Psikolog</option>
-                <option value="ADMIN">Admin</option>
+                <option value="ADMIN">Administrator</option>
+
               </select>
             </div>
           </div>

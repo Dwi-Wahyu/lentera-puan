@@ -33,7 +33,6 @@ export const formatEnum = (value: string | null | undefined): string => {
     LAINNYA: "Lainnya",
 
     // User Role
-    BIDAN: "Bidan",
     PSIKOLOG: "Psikolog",
     DP3A: "Petugas DP3A",
     ADMIN: "Administrator",
@@ -42,18 +41,6 @@ export const formatEnum = (value: string | null | undefined): string => {
     TERSEDIA: "Tersedia",
     HAMPIR_PENUH: "Hampir Penuh",
     PENUH: "Penuh",
-
-    // Logistic Unit
-    BOX: "Box",
-    PAKET: "Paket",
-    CAP: "Capsule / Tablet",
-    PCS: "Pcs",
-
-    // Logistic Status
-    CUKUP: "Cukup",
-    KRITIS: "Kritis",
-    MELIMPAH: "Melimpah",
-    MENIPIS: "Menipis",
 
     // Intervention Type
     PSIKOLOGIS: "Psikologis Klinis",

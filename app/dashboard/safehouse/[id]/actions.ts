@@ -78,10 +78,9 @@ export async function deleteSafeHouse(id: string) {
     });
 
     revalidatePath("/dashboard/safehouse");
+    return { success: true };
   } catch (error) {
     console.error("Error deleting safe house:", error);
     return { error: "Gagal menghapus data Rumah Aman." };
   }
-
-  redirect("/dashboard/safehouse");
 }

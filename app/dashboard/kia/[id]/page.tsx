@@ -1,23 +1,23 @@
-import React from 'react';
+import React from "react";
 import { prisma } from "@/lib/prisma";
-import { Card } from '@/components/Card';
-import { Button } from '@/components/Button';
-import { 
-  ArrowLeft, 
-  User, 
-  Fingerprint, 
-  Baby, 
-  Activity, 
-  Calendar, 
+import { Card } from "@/components/Card";
+import { Button } from "@/components/Button";
+import {
+  ArrowLeft,
+  User,
+  Fingerprint,
+  Baby,
+  Activity,
+  Calendar,
   FileText,
   Plus,
   ClipboardList,
-  Edit2
-} from 'lucide-react';
-import Link from 'next/link';
+  Edit2,
+} from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { DownloadRecapButton } from '@/components/DownloadRecapButton';
-import { formatEnum } from '@/lib/formatters';
+import { DownloadRecapButton } from "@/components/DownloadRecapButton";
+import { formatEnum } from "@/lib/formatters";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -29,9 +29,9 @@ export default async function MedicalRecordPage({ params }: PageProps) {
     where: { id },
     include: {
       checkups: {
-        orderBy: { date: 'desc' }
-      }
-    }
+        orderBy: { date: "desc" },
+      },
+    },
   });
 
   if (!patient) {
@@ -68,36 +68,51 @@ export default async function MedicalRecordPage({ params }: PageProps) {
           <div className="space-y-6">
             <div className="flex justify-center">
               <div className="w-24 h-24 rounded-full bg-surface-container flex items-center justify-center text-primary text-4xl">
-                {patient.category === 'ANAK' ? <Baby className="w-12 h-12" /> : <User className="w-12 h-12" />}
+                {patient.category === "ANAK" ? (
+                  <Baby className="w-12 h-12" />
+                ) : (
+                  <User className="w-12 h-12" />
+                )}
               </div>
             </div>
-            
+
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <Fingerprint className="w-5 h-5 text-on-surface-variant" />
                 <div>
-                  <p className="text-xs font-bold text-on-surface-variant uppercase">NIK</p>
+                  <p className="text-xs font-bold text-on-surface-variant uppercase">
+                    NIK
+                  </p>
                   <p className="text-sm font-bold">{patient.nik}</p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-3">
                 <ClipboardList className="w-5 h-5 text-on-surface-variant" />
                 <div>
-                  <p className="text-xs font-bold text-on-surface-variant uppercase">Kategori</p>
-                  <p className="text-sm font-bold">{formatEnum(patient.category)}</p>
+                  <p className="text-xs font-bold text-on-surface-variant uppercase">
+                    Kategori
+                  </p>
+                  <p className="text-sm font-bold">
+                    {formatEnum(patient.category)}
+                  </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
                 <Activity className="w-5 h-5 text-on-surface-variant" />
                 <div>
-                  <p className="text-xs font-bold text-on-surface-variant uppercase">Status Gizi Saat Ini</p>
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase inline-block mt-1 ${
-                    patient.nutritionStatus === 'PERLU_PERHATIAN' || patient.nutritionStatus === 'RISIKO_TINGGI' 
-                      ? 'bg-error-container text-on-error-container' 
-                      : 'bg-secondary-container text-on-secondary-container'
-                  }`}>
+                  <p className="text-xs font-bold text-on-surface-variant uppercase">
+                    Status Gizi Saat Ini
+                  </p>
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase inline-block mt-1 ${
+                      patient.nutritionStatus === "PERLU_PERHATIAN" ||
+                      patient.nutritionStatus === "RISIKO_TINGGI"
+                        ? "bg-error-container text-on-error-container"
+                        : "bg-secondary-container text-on-secondary-container"
+                    }`}
+                  >
                     {formatEnum(patient.nutritionStatus)}
                   </span>
                 </div>
@@ -113,54 +128,93 @@ export default async function MedicalRecordPage({ params }: PageProps) {
         </Card>
 
         {/* Checkup History */}
-        <Card title="Riwayat Pemeriksaan" subtitle="Catatan medis berkala pasien" className="lg:col-span-2">
+        <Card
+          title="Riwayat Pemeriksaan"
+          subtitle="Catatan medis berkala pasien"
+          className="lg:col-span-2"
+        >
           <div className="overflow-x-auto mt-4">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-outline-variant">
-                  <th className="text-left py-3 text-sm font-bold text-on-surface">Tanggal</th>
-                  <th className="text-left py-3 text-sm font-bold text-on-surface">Status</th>
-                  <th className="text-left py-3 text-sm font-bold text-on-surface">Catatan / Hasil</th>
-                  <th className="text-left py-3 text-sm font-bold text-on-surface">Aksi</th>
+                  <th className="text-left py-3 text-sm font-bold text-on-surface">
+                    Tanggal
+                  </th>
+                  <th className="text-left py-3 text-sm font-bold text-on-surface">
+                    Status
+                  </th>
+                  <th className="text-left py-3 text-sm font-bold text-on-surface">
+                    Catatan / Hasil
+                  </th>
+                  <th className="text-left py-3 text-sm font-bold text-on-surface">
+                    Aksi
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline-variant">
-                {patient.checkups.length > 0 ? patient.checkups.map((checkup) => (
-                  <tr key={checkup.id} className="hover:bg-surface-container-low transition-colors group">
-                    <td className="py-4 text-sm whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-primary" />
-                        {checkup.date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
-                      </div>
-                    </td>
-                    <td className="py-4 text-sm">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                        checkup.status === 'NORMAL' ? 'bg-secondary-container text-on-secondary-container' : 'bg-error-container text-on-error-container'
-                      }`}>
-                        {formatEnum(checkup.status)}
-                      </span>
-                    </td>
-                    <td className="py-4 text-sm text-on-surface-variant max-w-xs truncate">
-                      {checkup.notes || '-'}
-                    </td>
-                    <td className="py-4 text-sm">
-                      <Link href={`/dashboard/kia/${id}/checkup/${checkup.id}`}>
-                        <Button variant="ghost" size="sm" className="gap-1 group-hover:bg-primary group-hover:text-on-primary">
-                          <FileText className="w-3 h-3" /> Detail
-                        </Button>
-                      </Link>
-                    </td>
-                  </tr>
-                )) : (
+                {patient.checkups.length > 0 ? (
+                  patient.checkups.map((checkup) => (
+                    <tr
+                      key={checkup.id}
+                      className="hover:bg-surface-container-low transition-colors group"
+                    >
+                      <td className="py-4 text-sm whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-primary" />
+                          {checkup.date.toLocaleDateString("id-ID", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </div>
+                      </td>
+                      <td className="py-4 text-sm">
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                            checkup.status === "NORMAL"
+                              ? "bg-secondary-container text-on-secondary-container"
+                              : "bg-error-container text-on-error-container"
+                          }`}
+                        >
+                          {formatEnum(checkup.status)}
+                        </span>
+                      </td>
+                      <td className="py-4 text-sm text-on-surface-variant max-w-xs truncate">
+                        {checkup.notes || "-"}
+                      </td>
+                      <td className="py-4 text-sm">
+                        <Link
+                          href={`/dashboard/kia/${id}/checkup/${checkup.id}`}
+                        >
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="gap-1 hover:bg-primary cursor-pointer"
+                          >
+                            <FileText className="w-3 h-3" /> Detail
+                          </Button>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
                   <tr>
-                    <td colSpan={4} className="py-8 text-center text-on-surface-variant italic">Belum ada riwayat pemeriksaan.</td>
+                    <td
+                      colSpan={4}
+                      className="py-8 text-center text-on-surface-variant italic"
+                    >
+                      Belum ada riwayat pemeriksaan.
+                    </td>
                   </tr>
                 )}
               </tbody>
             </table>
           </div>
           {patient.checkups.length > 0 && (
-            <DownloadRecapButton patientName={patient.name} checkups={patient.checkups} />
+            <DownloadRecapButton
+              patientName={patient.name}
+              checkups={patient.checkups}
+            />
           )}
         </Card>
       </div>

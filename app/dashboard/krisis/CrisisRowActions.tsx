@@ -12,7 +12,9 @@ interface CrisisRowActionsProps {
   reportId: string;
 }
 
-export const CrisisRowActions: React.FC<CrisisRowActionsProps> = ({ reportId }) => {
+export const CrisisRowActions: React.FC<CrisisRowActionsProps> = ({
+  reportId,
+}) => {
   const toast = useToast();
   const [isPending, setIsPending] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -36,7 +38,7 @@ export const CrisisRowActions: React.FC<CrisisRowActionsProps> = ({ reportId }) 
         <Button
           variant="ghost"
           size="sm"
-          className="px-2 gap-1 group-hover:bg-primary group-hover:text-on-primary transition-all"
+          className="px-2 gap-1 group-hover:bg-primary hover:text-primary cursor-pointer group-hover:text-on-primary transition-all"
         >
           <Eye className="w-3 h-3" /> Detail
         </Button>
@@ -57,7 +59,12 @@ export const CrisisRowActions: React.FC<CrisisRowActionsProps> = ({ reportId }) 
         onClick={() => setIsAlertOpen(true)}
         disabled={isPending}
       >
-        {isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />} Hapus
+        {isPending ? (
+          <Loader2 className="w-3 h-3 animate-spin" />
+        ) : (
+          <Trash2 className="w-3 h-3" />
+        )}{" "}
+        Hapus
       </Button>
 
       <AlertDialog

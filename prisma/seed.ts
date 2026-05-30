@@ -23,19 +23,6 @@ async function main() {
     },
   });
 
-  const bidan = await prisma.user.upsert({
-    where: { email: "siti@lp.go.id" },
-    update: {},
-    create: {
-      email: "siti@lp.go.id",
-      name: "Siti Aminah",
-      password: password,
-      role: "BIDAN",
-      nip: "198506122010012002",
-      unit: "Puskesmas Mawar",
-    },
-  });
-
   const psikolog = await prisma.user.upsert({
     where: { email: "ahmad@lp.go.id" },
     update: {},
@@ -111,7 +98,7 @@ async function main() {
         type: "KDRT",
         status: "BARU",
         priority: "TINGGI",
-        reporterId: bidan.id,
+        reporterId: wahil.id,
         safeHouseId: sh1.id,
         description: "Laporan kekerasan dalam rumah tangga fisik. Korban saat ini tinggal di Rumah Aman Melati.",
       },
@@ -135,16 +122,7 @@ async function main() {
     ],
   });
 
-  // 6. Seed Logistics
-  await prisma.logistic.createMany({
-    data: [
-      { name: "Susu Formula", stock: 240, unit: "BOX", status: "CUKUP" },
-      { name: "Biskuit Balita", stock: 12, unit: "BOX", status: "KRITIS" },
-      { name: "Paket Sembako", stock: 45, unit: "PAKET", status: "MENIPIS" },
-    ],
-  });
-
-  // 7. Seed Intervention Sessions
+  // 6. Seed Intervention Sessions
   await prisma.interventionSession.createMany({
     data: [
       {
@@ -155,7 +133,7 @@ async function main() {
         status: "SELESAI",
       },
       {
-        counselorId: bidan.id,
+        counselorId: admin.id,
         date: new Date(),
         time: "11:00 - 12:00",
         type: "MEDIS",
@@ -164,7 +142,7 @@ async function main() {
     ],
   });
 
-  // 8. Seed System Config
+  // 7. Seed System Config
   await prisma.systemConfig.upsert({
     where: { id: "default-config" },
     update: {},

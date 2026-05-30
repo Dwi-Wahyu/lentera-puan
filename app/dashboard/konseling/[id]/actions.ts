@@ -35,11 +35,10 @@ export async function deleteSession(id: string) {
       where: { id },
     });
 
+    revalidatePath("/dashboard/konseling");
+    return { success: true };
   } catch (error) {
     console.error("Error deleting session:", error);
     return { error: "Gagal menghapus jadwal sesi." };
   }
-
-  revalidatePath("/dashboard/konseling");
-  redirect("/dashboard/konseling");
 }

@@ -6,7 +6,7 @@ import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { ArrowLeft, Save, UserCircle, Baby, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { updatePatient } from './actions';
 import { useToast } from '@/components/providers/toast-provider';
 
@@ -16,9 +16,44 @@ interface Patient {
   category: string;
 }
 
+const SkeletonEdit = () => (
+  <div className="max-w-3xl mx-auto space-y-6 animate-pulse">
+    <div className="flex items-center gap-4">
+      <div className="w-9 h-9 bg-surface-container rounded-lg" />
+      <div className="space-y-2">
+        <div className="h-8 w-64 bg-surface-container rounded-md" />
+        <div className="h-4 w-96 bg-surface-container rounded-md" />
+      </div>
+    </div>
+    <Card className="p-8 space-y-8 shadow-lg border-t-4 border-t-outline-variant">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="md:col-span-2 h-6 w-40 bg-surface-container rounded-md mb-2" />
+        <div className="space-y-2">
+          <div className="h-4 w-24 bg-surface-container rounded-md" />
+          <div className="h-10 w-full bg-surface-container rounded-md" />
+        </div>
+        <div className="space-y-2">
+          <div className="h-4 w-24 bg-surface-container rounded-md" />
+          <div className="h-10 w-full bg-surface-container rounded-md" />
+        </div>
+        <div className="md:col-span-2 h-6 w-40 bg-surface-container rounded-md mt-4 mb-2" />
+        <div className="md:col-span-2 space-y-2">
+          <div className="h-4 w-24 bg-surface-container rounded-md" />
+          <div className="h-10 w-full bg-surface-container rounded-md" />
+        </div>
+      </div>
+      <div className="flex justify-end gap-4 pt-4 border-t border-outline-variant">
+        <div className="h-10 w-24 bg-surface-container rounded-md" />
+        <div className="h-10 w-40 bg-surface-container rounded-md" />
+      </div>
+    </Card>
+  </div>
+);
+
 export default function EditPatientPage() {
   const params = useParams();
   const id = params.id as string;
+  const router = useRouter();
   const toast = useToast();
   const [patient, setPatient] = useState<Patient | null>(null);
   const [isPending, setIsPending] = useState(false);
@@ -40,14 +75,11 @@ export default function EditPatientPage() {
       setIsPending(false);
     } else {
       toast.success('Berhasil', 'Identitas Pasien Berhasil Diperbarui.');
+      router.push(`/dashboard/kia/${id}`);
     }
   }
 
-  if (!patient) return (
-    <div className="min-h-[400px] flex items-center justify-center">
-      <Loader2 className="w-8 h-8 animate-spin text-primary" />
-    </div>
-  );
+  if (!patient) return <SkeletonEdit />;
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">

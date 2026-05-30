@@ -4,16 +4,22 @@ import React from 'react';
 import { Button } from '@/components/Button';
 import { ArrowLeft, User } from 'lucide-react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { CheckupForm } from '@/components/CheckupForm';
 import { createCheckup } from './actions';
 
 export default function NewCheckupPage() {
   const params = useParams();
   const patientId = params.id as string;
+  const router = useRouter();
 
   async function handleCreate(formData: FormData) {
-    return await createCheckup(patientId, formData);
+    const result = await createCheckup(patientId, formData);
+    if (!result?.error) {
+      // Toast is handled in CheckupForm, we just need to redirect
+      router.push(`/dashboard/kia/${patientId}`);
+    }
+    return result;
   }
 
   return (
