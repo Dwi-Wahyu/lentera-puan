@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { revalidatePath } from "next/cache";
 
 export async function createCounselingSession(formData: FormData) {
@@ -19,23 +19,19 @@ export async function createCounselingSession(formData: FormData) {
     return { error: "Format waktu tidak valid (Contoh: 09:00 atau 09:00 - 10:00)." };
   }
 
-  const date = new Date(dateStr);
-
   try {
-    await prisma.interventionSession.create({
-      data: {
-        counselorId,
-        date,
-        time,
-        type,
-        status: "MENDATANG",
-      },
+    await api.createIntervention({
+      counselorId,
+      date: dateStr,
+      time,
+      type,
+      status: "MENDATANG",
     });
     
     revalidatePath("/dashboard/konseling");
     return { success: true };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating counseling session:", error);
-    return { error: "Terjadi kesalahan saat membuat jadwal konseling." };
+    return { error: error.message || "Terjadi kesalahan saat membuat jadwal konseling." };
   }
 }

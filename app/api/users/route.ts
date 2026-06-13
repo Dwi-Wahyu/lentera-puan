@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -6,26 +6,16 @@ export async function GET(request: Request) {
   const role = searchParams.get("role");
 
   try {
-    let where = {};
+    const users = await api.getUsers();
+    
+    let filteredUsers = users;
     if (role === 'counselor') {
-      where = {
-        role: {
-          in: ['PSIKOLOG', 'DP3A']
-        }
-      };
+      filteredUsers = users.filter((u: any) => ['PSIKOLOG', 'DP3A', 'KONSELOR'].includes(u.role));
     }
 
-    const users = await prisma.user.findMany({
-      where,
-      select: {
-        id: true,
-        name: true,
-        role: true,
-      }
-    });
-
-    return NextResponse.json(users);
-  } catch {
+    return NextResponse.json(filteredUsers);
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
     return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 });
   }
 }

@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { revalidatePath } from "next/cache";
 
 export async function createSafeHouse(formData: FormData) {
@@ -19,21 +19,18 @@ export async function createSafeHouse(formData: FormData) {
   }
 
   try {
-    await prisma.safeHouse.create({
-      data: {
-        name,
-        capacity,
-        safetyLevel,
-        location: location || null,
-        status: "TERSEDIA",
-        occupied: 0,
-      },
+    await api.createSafehouse({
+      name,
+      capacity,
+      safetyLevel,
+      location: location || null,
+      status: "TERSEDIA",
     });
     
     revalidatePath("/dashboard/safehouse");
     return { success: true };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating safe house:", error);
-    return { error: "Terjadi kesalahan saat menyimpan data Rumah Aman." };
+    return { error: error.message || "Terjadi kesalahan saat menyimpan data Rumah Aman." };
   }
 }

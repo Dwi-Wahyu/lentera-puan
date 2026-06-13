@@ -1,12 +1,12 @@
 import React from 'react';
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { Button } from '@/components/Button';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { notFound, redirect } from "next/navigation";
 import { updateUser } from './actions';
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { EditUserFormClient } from './EditUserFormClient';
 
 interface PageProps {
@@ -30,17 +30,12 @@ export default async function EditUserPage({ params }: PageProps) {
     redirect("/dashboard");
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      role: true,
-      nip: true,
-      unit: true,
-    }
-  });
+  let user;
+  try {
+    user = await api.getUser(id);
+  } catch (error) {
+    notFound();
+  }
 
   if (!user) {
     notFound();

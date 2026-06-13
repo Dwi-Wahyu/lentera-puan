@@ -3,11 +3,11 @@ import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Search, UserPlus, ShieldCheck, Mail, MapPin, Edit3 } from 'lucide-react';
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import Link from 'next/link';
 import { formatEnum } from '@/lib/formatters';
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export default async function UsersPage() {
@@ -18,9 +18,7 @@ export default async function UsersPage() {
     redirect("/dashboard");
   }
 
-  const users = await prisma.user.findMany({
-    orderBy: { createdAt: 'desc' },
-  });
+  const users = await api.getUsers();
 
   return (
     <div className="space-y-6">
@@ -69,12 +67,12 @@ export default async function UsersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-outline-variant">
-              {users.length > 0 ? users.map((user) => (
+              {users.length > 0 ? users.map((user: any) => (
                 <tr key={user.id} className="hover:bg-surface-container-low transition-colors text-sm group">
                   <td className="py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-sm border-2 border-surface shadow-sm">
-                        {user.name?.split(' ').map(n => n[0]).join('')}
+                        {user.name?.split(' ').map((n: string) => n[0]).join('')}
                       </div>
                       <div className="flex flex-col">
                         <span className="font-bold text-on-surface">{user.name}</span>

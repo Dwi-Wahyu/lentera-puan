@@ -1,9 +1,7 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { revalidatePath } from "next/cache";
-import bcrypt from "bcryptjs";
-import { Prisma } from "@prisma/client";
 
 export async function createUser(formData: FormData) {
   const name = formData.get("name") as string;
@@ -18,28 +16,19 @@ export async function createUser(formData: FormData) {
   }
 
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-        role,
-        nip: nip || null,
-        unit: unit || null,
-      },
+    await api.createUser({
+      name,
+      email,
+      password,
+      role,
+      nip: nip || null,
+      unit: unit || null,
     });
 
     revalidatePath("/dashboard/users");
     return { success: true };
-  } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === 'P2002') {
-        return { error: "Email atau NIP sudah terdaftar dalam sistem." };
-      }
-    }
+  } catch (error: any) {
     console.error("Error creating user:", error);
-    return { error: "Gagal membuat pengguna baru." };
+    return { error: error.message || "Gagal membuat pengguna baru." };
   }
 }

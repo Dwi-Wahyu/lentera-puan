@@ -1,5 +1,5 @@
 import React from 'react';
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { 
@@ -21,10 +21,12 @@ interface PageProps {
 export default async function CheckupDetailPage({ params }: PageProps) {
   const { id: patientId, checkupId } = await params;
 
-  const checkup = await prisma.medicalCheckup.findUnique({
-    where: { id: checkupId },
-    include: { patient: true }
-  });
+  let checkup;
+  try {
+    checkup = await api.getCheckup(checkupId);
+  } catch (error) {
+    notFound();
+  }
 
   if (!checkup) {
     notFound();
@@ -57,7 +59,7 @@ export default async function CheckupDetailPage({ params }: PageProps) {
               <Calendar className="w-5 h-5 text-primary" />
               <div>
                 <p className="text-[10px] font-bold text-on-surface-variant uppercase">Tanggal Periksa</p>
-                <p className="text-sm font-bold">{checkup.date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                <p className="text-sm font-bold">{new Date(checkup.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
               </div>
             </div>
             
@@ -65,7 +67,7 @@ export default async function CheckupDetailPage({ params }: PageProps) {
               <Clock className="w-5 h-5 text-primary" />
               <div>
                 <p className="text-[10px] font-bold text-on-surface-variant uppercase">Waktu Input</p>
-                <p className="text-sm font-bold">{checkup.date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB</p>
+                <p className="text-sm font-bold">{new Date(checkup.date).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB</p>
               </div>
             </div>
 

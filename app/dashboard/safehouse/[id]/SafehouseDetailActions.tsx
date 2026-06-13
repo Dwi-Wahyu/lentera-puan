@@ -15,19 +15,23 @@ import { AlertDialog } from "@/components/AlertDialog";
 import { deleteSafeHouse } from "./actions";
 import { useToast } from "@/components/providers/toast-provider";
 import { useRouter } from "next/navigation";
+import { EditSafehouseModal } from "./EditSafehouseModal";
 
 interface SafehouseDetailActionsProps {
   id: string;
+  safeHouse: any;
 }
 
 export const SafehouseDetailActions: React.FC<SafehouseDetailActionsProps> = ({
   id,
+  safeHouse,
 }) => {
   const toast = useToast();
   const router = useRouter();
   const [isProtocolOpen, setIsProtocolOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
   const handleDelete = async () => {
@@ -67,7 +71,10 @@ export const SafehouseDetailActions: React.FC<SafehouseDetailActionsProps> = ({
             <div className="absolute right-0 mt-2 w-48 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-xl z-20 py-2 animate-in fade-in zoom-in-95">
               <button
                 className="w-full text-left px-4 py-2 text-sm hover:bg-surface-container-low transition-colors flex items-center gap-2"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setIsEditOpen(true);
+                }}
               >
                 <Edit className="w-4 h-4" /> Edit Lokasi
               </button>
@@ -150,6 +157,13 @@ export const SafehouseDetailActions: React.FC<SafehouseDetailActionsProps> = ({
         variant="error"
         confirmLabel="Ya, Hapus Lokasi"
         isLoading={isPending}
+      />
+
+      {/* Edit Modal */}
+      <EditSafehouseModal
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        safeHouse={safeHouse}
       />
     </>
   );

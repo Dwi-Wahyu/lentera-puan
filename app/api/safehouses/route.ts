@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -6,21 +6,16 @@ export async function GET(request: Request) {
   const available = searchParams.get("available");
 
   try {
-    let where = {};
+    const safehouses = await api.getSafehouses();
+    
+    let filteredSafehouses = safehouses;
     if (available === 'true') {
-      where = {
-        status: {
-          not: "PENUH"
-        }
-      };
+      filteredSafehouses = safehouses.filter((sh: any) => sh.status !== "PENUH");
     }
 
-    const safehouses = await prisma.safeHouse.findMany({
-      where
-    });
-
-    return NextResponse.json(safehouses);
-  } catch {
+    return NextResponse.json(filteredSafehouses);
+  } catch (error) {
+    console.error("Failed to fetch safehouses:", error);
     return NextResponse.json({ error: "Failed to fetch safehouses" }, { status: 500 });
   }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { formatEnum } from '@/lib/formatters';
 
@@ -26,19 +26,12 @@ export default async function AuditLogPage() {
     redirect("/dashboard");
   }
 
-  const logs = await prisma.auditLog.findMany({
-    orderBy: { createdAt: 'desc' },
-    include: {
-      user: {
-        select: {
-          name: true,
-          role: true,
-          email: true,
-        }
-      }
-    },
-    take: 50
-  });
+  let logs = [];
+  try {
+    logs = await api.getAuditLogs();
+  } catch (error) {
+    console.error("Failed to fetch audit logs:", error);
+  }
 
   return (
     <div className="space-y-6">
@@ -104,15 +97,15 @@ export default async function AuditLogPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-outline-variant">
-              {logs.length > 0 ? logs.map((log) => (
+              {logs.length > 0 ? logs.map((log: any) => (
                 <tr key={log.id} className="hover:bg-surface-container-low transition-colors group">
                   <td className="py-4 whitespace-nowrap">
                     <div className="flex flex-col">
                        <span className="text-sm font-bold text-on-surface">
-                         {log.createdAt.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
+                         {new Date(log.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                        </span>
                        <span className="text-[10px] text-on-surface-variant flex items-center gap-1">
-                         <Clock className="w-3 h-3" /> {log.createdAt.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                         <Clock className="w-3 h-3" /> {new Date(log.createdAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
                        </span>
                     </div>
                   </td>

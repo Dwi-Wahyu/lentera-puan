@@ -1,5 +1,5 @@
 import React from "react";
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import {
@@ -25,14 +25,14 @@ interface PageProps {
 
 export default async function MedicalRecordPage({ params }: PageProps) {
   const { id } = await params;
-  const patient = await prisma.patient.findUnique({
-    where: { id },
-    include: {
-      checkups: {
-        orderBy: { date: "desc" },
-      },
-    },
-  });
+  
+  let patient;
+  try {
+    patient = await api.getPatient(id);
+  } catch (error) {
+    console.error("Failed to fetch patient:", error);
+    notFound();
+  }
 
   if (!patient) {
     notFound();
@@ -152,8 +152,8 @@ export default async function MedicalRecordPage({ params }: PageProps) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline-variant">
-                {patient.checkups.length > 0 ? (
-                  patient.checkups.map((checkup) => (
+                {patient.checkups && patient.checkups.length > 0 ? (
+                  patient.checkups.map((checkup: any) => (
                     <tr
                       key={checkup.id}
                       className="hover:bg-surface-container-low transition-colors group"
@@ -161,7 +161,7 @@ export default async function MedicalRecordPage({ params }: PageProps) {
                       <td className="py-4 text-sm whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           <Calendar className="w-4 h-4 text-primary" />
-                          {checkup.date.toLocaleDateString("id-ID", {
+                          {new Date(checkup.date).toLocaleDateString("id-ID", {
                             day: "numeric",
                             month: "short",
                             year: "numeric",
@@ -210,7 +210,7 @@ export default async function MedicalRecordPage({ params }: PageProps) {
               </tbody>
             </table>
           </div>
-          {patient.checkups.length > 0 && (
+          {patient.checkups && patient.checkups.length > 0 && (
             <DownloadRecapButton
               patientName={patient.name}
               checkups={patient.checkups}

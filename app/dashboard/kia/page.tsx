@@ -4,23 +4,21 @@ import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { Plus, Search, FileText, Baby, Users, AlertCircle } from "lucide-react";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { formatEnum } from "@/lib/formatters";
 
 export default async function KIAPage() {
-  const patients = await prisma.patient.findMany({
-    orderBy: { updatedAt: "desc" },
-  });
+  let patients = [];
+  let stats = { pregnantCount: 0, childrenCount: 0, stuntingRiskCount: 0 };
 
-  const pregnantCount = await prisma.patient.count({
-    where: { category: "IBU_HAMIL" },
-  });
-  const childrenCount = await prisma.patient.count({
-    where: { category: "ANAK" },
-  });
-  const stuntingRiskCount = await prisma.patient.count({
-    where: { nutritionStatus: "RISIKO_TINGGI" },
-  });
+  try {
+    patients = await api.getPatients();
+    stats.pregnantCount = patients.filter((p: any) => p.category === "IBU_HAMIL").length;
+    stats.childrenCount = patients.filter((p: any) => p.category === "ANAK").length;
+    stats.stuntingRiskCount = patients.filter((p: any) => p.nutritionStatus === "RISIKO_TINGGI").length;
+  } catch (error) {
+    console.error("Failed to fetch KIA data:", error);
+  }
 
   return (
     <div className="space-y-6">
@@ -50,7 +48,7 @@ export default async function KIAPage() {
             Total Ibu Hamil
           </p>
           <p className="text-3xl font-bold mt-1 text-on-primary leading-none">
-            {pregnantCount}
+            {stats.pregnantCount}
           </p>
         </div>
         <div className="bg-secondary rounded-xl p-5 shadow-md shadow-secondary/20 relative overflow-hidden">
@@ -62,7 +60,7 @@ export default async function KIAPage() {
             Balita Terpantau
           </p>
           <p className="text-3xl font-bold mt-1 text-on-secondary leading-none">
-            {childrenCount}
+            {stats.childrenCount}
           </p>
         </div>
         <div className="bg-error rounded-xl p-5 shadow-md shadow-error/20 relative overflow-hidden">
@@ -74,7 +72,7 @@ export default async function KIAPage() {
             Risiko Stunting
           </p>
           <p className="text-3xl font-bold mt-1 text-on-error leading-none">
-            {stuntingRiskCount}
+            {stats.stuntingRiskCount}
           </p>
         </div>
       </div>
@@ -140,7 +138,7 @@ export default async function KIAPage() {
               </thead>
               <tbody className="divide-y divide-outline-variant/30">
                 {patients.length > 0 ? (
-                  patients.map((patient) => (
+                  patients.map((patient: any) => (
                     <tr
                       key={patient.id}
                       className="hover:bg-surface-container-low/60 transition-colors group"
@@ -159,7 +157,7 @@ export default async function KIAPage() {
                         {formatEnum(patient.category)}
                       </td>
                       <td className="py-3.5 px-3 text-xs text-on-surface-variant">
-                        {patient.lastCheckup?.toLocaleDateString("id-ID") || (
+                        {patient.lastCheckup ? new Date(patient.lastCheckup).toLocaleDateString("id-ID") : (
                           <span className="text-outline-variant italic">
                             Belum ada
                           </span>

@@ -1,8 +1,7 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { revalidatePath } from "next/cache";
-import { Prisma } from "@prisma/client";
 
 export async function createPatient(formData: FormData) {
   const name = formData.get("name") as string;
@@ -15,23 +14,16 @@ export async function createPatient(formData: FormData) {
   }
 
   try {
-    await prisma.patient.create({
-      data: {
-        name,
-        nik,
-        category,
-        nutritionStatus: nutritionStatus || "NORMAL",
-      },
+    await api.createPatient({
+      name,
+      nik,
+      category,
+      nutritionStatus: nutritionStatus || "NORMAL",
     });
     
     revalidatePath("/dashboard/kia");
     return { success: true };
-  } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === 'P2002') {
-        return { error: "NIK sudah terdaftar dalam sistem." };
-      }
-    }
-    return { error: "Terjadi kesalahan saat menyimpan data." };
+  } catch (error: any) {
+    return { error: error.message || "Terjadi kesalahan saat menyimpan data." };
   }
 }

@@ -1,9 +1,9 @@
 import React from 'react';
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import SettingsClient from './SettingsClient';
-import { prisma } from '@/lib/prisma';
+import { api } from "@/lib/api";
 
 export default async function SettingsPage() {
   const session = await getServerSession(authOptions);
@@ -12,20 +12,13 @@ export default async function SettingsPage() {
     redirect("/dashboard");
   }
 
-  // Defensive check for model existence
-  if (!prisma.systemConfig) {
-    console.error("Prisma model 'systemConfig' is undefined at runtime!");
-    return (
-      <div className="p-8 text-center bg-error-container text-on-error-container rounded-xl">
-        <h2 className="text-xl font-bold">Database Client Out of Sync</h2>
-        <p className="mt-2">Silakan restart development server (npm run dev) untuk memuat model database terbaru.</p>
-      </div>
-    );
+  let config;
+  try {
+    config = await api.getConfig();
+  } catch (error) {
+    console.error("Failed to fetch system config:", error);
+    config = null;
   }
-
-  const config = await prisma.systemConfig.findUnique({
-    where: { id: "default-config" },
-  });
 
   return <SettingsClient initialConfig={config} />;
 }

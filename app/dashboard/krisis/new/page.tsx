@@ -34,9 +34,15 @@ export default function NewCrisisReportPage() {
 
   useEffect(() => {
     async function fetchSafeHouses() {
-      const res = await fetch('/api/safehouses?available=true');
-      const data = await res.json();
-      setSafeHouses(data);
+      try {
+        const res = await fetch('/api/safehouses?available=true');
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        setSafeHouses(data);
+      } catch (error) {
+        console.error("Failed to fetch safe houses:", error);
+        setSafeHouses([]);
+      }
     }
     fetchSafeHouses();
   }, []);

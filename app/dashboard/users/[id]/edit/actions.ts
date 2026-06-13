@@ -1,9 +1,7 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { revalidatePath } from "next/cache";
-import bcrypt from "bcryptjs";
-import { Prisma } from "@prisma/client";
 
 export async function updateUser(id: string, formData: FormData) {
   const name = formData.get("name") as string;
@@ -18,14 +16,7 @@ export async function updateUser(id: string, formData: FormData) {
   }
 
   try {
-    const updateData: {
-      name: string;
-      email: string;
-      role: string;
-      nip: string | null;
-      unit: string | null;
-      password?: string;
-    } = {
+    const updateData: any = {
       name,
       email,
       role,
@@ -34,24 +25,16 @@ export async function updateUser(id: string, formData: FormData) {
     };
 
     if (password) {
-      updateData.password = await bcrypt.hash(password, 10);
+      updateData.password = password;
     }
 
-    await prisma.user.update({
-      where: { id },
-      data: updateData,
-    });
+    await api.updateUser(id, updateData);
 
     revalidatePath("/dashboard/users");
     revalidatePath("/dashboard/profile");
     return { success: true };
-  } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === 'P2002') {
-        return { error: "Email atau NIP sudah terdaftar dalam sistem." };
-      }
-    }
+  } catch (error: any) {
     console.error("Error updating user:", error);
-    return { error: "Gagal memperbarui data pengguna." };
+    return { error: error.message || "Gagal memperbarui data pengguna." };
   }
 }

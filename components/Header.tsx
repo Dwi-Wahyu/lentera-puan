@@ -3,7 +3,7 @@
 import React from 'react';
 import { useSession } from "next-auth/react";
 import { LogoutButtonHeader } from "./LogoutButtonHeader";
-import { Bell, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { formatEnum } from "@/lib/formatters";
 import { Breadcrumbs } from './Breadcrumbs';
 import { useSidebar } from './providers/sidebar-provider';
@@ -38,15 +38,6 @@ export const Header = () => {
       </div>
 
       <div className="flex items-center gap-1.5 lg:gap-3">
-        {/* Notification Bell */}
-        <button className="relative p-2 text-on-surface-variant hover:bg-surface-container hover:text-primary rounded-lg transition-colors">
-          <Bell className="w-4.5 h-4.5" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full border-2 border-surface-container-lowest animate-pulse" />
-        </button>
-
-        {/* Divider */}
-        <div className="h-7 w-px bg-outline-variant/60 mx-1" />
-
         {/* User Info */}
         <div className="flex items-center gap-2.5">
           <div className="text-right hidden md:block">

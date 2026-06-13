@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -7,24 +7,15 @@ export async function GET(
 ) {
   const { id } = await params;
   try {
-    const user = await prisma.user.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        nip: true,
-        unit: true,
-      }
-    });
+    const user = await api.getUser(id);
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     return NextResponse.json(user);
-  } catch {
+  } catch (error) {
+    console.error("Failed to fetch user:", error);
     return NextResponse.json({ error: "Failed to fetch user" }, { status: 500 });
   }
 }

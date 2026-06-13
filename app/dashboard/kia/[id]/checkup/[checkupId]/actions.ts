@@ -1,33 +1,7 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-
-async function syncPatientSummary(patientId: string) {
-  const latestCheckup = await prisma.medicalCheckup.findFirst({
-    where: { patientId },
-    orderBy: { date: 'desc' }
-  });
-
-  if (latestCheckup) {
-    await prisma.patient.update({
-      where: { id: patientId },
-      data: {
-        lastCheckup: latestCheckup.date,
-        nutritionStatus: latestCheckup.status
-      }
-    });
-  } else {
-    await prisma.patient.update({
-      where: { id: patientId },
-      data: {
-        lastCheckup: null,
-        nutritionStatus: "NORMAL"
-      }
-    });
-  }
-}
 
 export async function updateCheckup(patientId: string, checkupId: string, formData: FormData) {
   const status = formData.get("status") as string;
@@ -38,21 +12,14 @@ export async function updateCheckup(patientId: string, checkupId: string, formDa
     return { error: "Tanggal dan Status wajib diisi." };
   }
 
-  const date = new Date(dateStr);
-
   try {
-    await prisma.medicalCheckup.update({
-      where: { id: checkupId },
-      data: {
-        date,
-        status,
-        notes: notes || null,
-      },
+    await api.updateCheckup(checkupId, {
+      date: dateStr,
+      status,
+      notes: notes || null,
     });
-
-    await syncPatientSummary(patientId);
-  } catch {
-    return { error: "Gagal memperbarui data pemeriksaan." };
+  } catch (error: any) {
+    return { error: error.message || "Gagal memperbarui data pemeriksaan." };
   }
 
   revalidatePath(`/dashboard/kia/${patientId}`);
@@ -62,13 +29,9 @@ export async function updateCheckup(patientId: string, checkupId: string, formDa
 
 export async function deleteCheckup(patientId: string, checkupId: string) {
   try {
-    await prisma.medicalCheckup.delete({
-      where: { id: checkupId },
-    });
-
-    await syncPatientSummary(patientId);
-  } catch {
-    return { error: "Gagal menghapus data pemeriksaan." };
+    await api.deleteCheckup(checkupId);
+  } catch (error: any) {
+    return { error: error.message || "Gagal menghapus data pemeriksaan." };
   }
 
   revalidatePath(`/dashboard/kia/${patientId}`);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { 
@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { notFound } from "next/navigation";
 import { OccupancyActions } from './OccupancyActions';
 import { SafehouseDetailActions } from './SafehouseDetailActions';
+import { ResidentActions } from './ResidentActions';
 import { formatEnum } from '@/lib/formatters';
 
 interface PageProps {
@@ -22,16 +23,13 @@ interface PageProps {
 
 export default async function SafeHouseDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const safeHouse = await prisma.safeHouse.findUnique({
-    where: { id },
-    include: {
-      residents: {
-        include: {
-          reporter: true
-        }
-      }
-    }
-  });
+  let safeHouse;
+  
+  try {
+    safeHouse = await api.getSafehouse(id);
+  } catch (error) {
+    notFound();
+  }
 
   if (!safeHouse) {
     notFound();
@@ -56,7 +54,7 @@ export default async function SafeHouseDetailPage({ params }: PageProps) {
             </p>
           </div>
         </div>
-        <SafehouseDetailActions id={id} />
+        <SafehouseDetailActions id={id} safeHouse={safeHouse} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -154,15 +152,15 @@ export default async function SafeHouseDetailPage({ params }: PageProps) {
                 <th className="text-left py-3 text-sm font-bold text-on-surface">Inisial</th>
                 <th className="text-left py-3 text-sm font-bold text-on-surface">Tanggal Masuk</th>
                 <th className="text-left py-3 text-sm font-bold text-on-surface">Prioritas</th>
-                <th className="text-left py-3 text-sm font-bold text-on-surface">Aksi</th>
+                <th className="text-right py-3 text-sm font-bold text-on-surface">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-outline-variant">
-              {safeHouse.residents.length > 0 ? safeHouse.residents.map((resident) => (
+              {safeHouse.residents.length > 0 ? safeHouse.residents.map((resident: any) => (
                 <tr key={resident.id} className="hover:bg-surface-container-low transition-colors group">
                   <td className="py-4 text-sm font-bold text-primary">{resident.id.slice(-8).toUpperCase()}</td>
                   <td className="py-4 text-sm font-bold">{resident.victimInitials}</td>
-                  <td className="py-4 text-sm text-on-surface-variant">{resident.date.toLocaleDateString('id-ID')}</td>
+                  <td className="py-4 text-sm text-on-surface-variant">{new Date(resident.date).toLocaleDateString('id-ID')}</td>
                   <td className="py-4 text-sm">
                     <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                       resident.priority === 'TINGGI' || resident.priority === 'SANGAT_TINGGI' ? 'bg-error-container text-on-error-container' : 'bg-surface-container-high text-on-surface'
@@ -170,12 +168,15 @@ export default async function SafeHouseDetailPage({ params }: PageProps) {
                       {formatEnum(resident.priority)}
                     </span>
                   </td>
-                  <td className="py-4 text-sm">
-                    <Link href={`/dashboard/krisis/${resident.id}`}>
-                      <Button variant="ghost" size="sm" className="gap-2 group-hover:bg-primary group-hover:text-on-primary transition-all">
-                        <Eye className="w-4 h-4" /> Detail Kasus
-                      </Button>
-                    </Link>
+                  <td className="py-4 text-sm text-right">
+                    <div className="flex justify-end gap-2">
+                      <ResidentActions safeHouseId={id} reportId={resident.id} />
+                      <Link href={`/dashboard/krisis/${resident.id}`}>
+                        <Button variant="ghost" size="sm" className="gap-2 group-hover:bg-primary group-hover:text-on-primary transition-all">
+                          <Eye className="w-4 h-4" /> Detail
+                        </Button>
+                      </Link>
+                    </div>
                   </td>
                 </tr>
               )) : (

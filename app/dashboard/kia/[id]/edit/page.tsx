@@ -60,12 +60,21 @@ export default function EditPatientPage() {
 
   useEffect(() => {
     async function fetchPatient() {
-      const res = await fetch(`/api/patients/${id}`);
-      const data = await res.json();
-      setPatient(data);
+      try {
+        const res = await fetch(`/api/patients/${id}`);
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.error || "Gagal memuat data pasien.");
+        }
+        const data = await res.json();
+        setPatient(data);
+      } catch (err: any) {
+        toast.error("Kesalahan", err.message || "Gagal memuat data pasien.");
+        router.push(`/dashboard/kia/${id}`);
+      }
     }
     fetchPatient();
-  }, [id]);
+  }, [id, router, toast]);
 
   async function handleSubmit(formData: FormData) {
     setIsPending(true);

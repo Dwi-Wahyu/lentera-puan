@@ -1,5 +1,5 @@
 import React from "react";
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import {
@@ -13,11 +13,15 @@ import {
   Clock,
   ExternalLink,
   Folder,
+  Image as ImageIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CrisisActions } from "./CrisisActions";
 import { formatEnum } from "@/lib/formatters";
+import Image from "next/image";
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -25,18 +29,13 @@ interface PageProps {
 
 export default async function CrisisDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const report = await prisma.crisisReport.findUnique({
-    where: { id },
-    include: {
-      reporter: true,
-      patient: true,
-      safeHouse: true,
-      logs: {
-        orderBy: { createdAt: "desc" },
-      },
-      evidences: true,
-    },
-  });
+  let report;
+  
+  try {
+    report = await api.getCrisisReport(id);
+  } catch (error) {
+    notFound();
+  }
 
   if (!report) {
     notFound();
@@ -119,7 +118,7 @@ export default async function CrisisDetailPage({ params }: PageProps) {
                     Tanggal Kejadian
                   </p>
                   <p className="text-sm font-bold">
-                    {report.date.toLocaleDateString("id-ID", {
+                    {new Date(report.date).toLocaleDateString("id-ID", {
                       day: "numeric",
                       month: "long",
                       year: "numeric",
@@ -175,12 +174,45 @@ export default async function CrisisDetailPage({ params }: PageProps) {
             </h4>
             {report.evidences.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {report.evidences.map((ev) => (
+                {report.evidences.map((ev: any) => (
                   <div
                     key={ev.id}
-                    className="aspect-square bg-surface-container rounded-lg border border-outline-variant flex items-center justify-center italic text-[10px] text-on-surface-variant"
+                    className="group relative aspect-square bg-surface-container rounded-lg border border-outline-variant overflow-hidden"
                   >
-                    {formatEnum(ev.type)} File
+                    {ev.url && (ev.url.match(/\.(jpg|jpeg|png|webp|gif)$/i) || ev.type === 'IMAGE' || ev.type.startsWith('image/')) ? (
+                      <>
+                        <Image
+                          src={`${BACKEND_URL}${ev.url}`}
+                          alt="Bukti Krisis"
+                          fill
+                          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
+                          className="object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <a 
+                            href={`${BACKEND_URL}${ev.url}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="p-2 bg-surface rounded-full text-on-surface"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-on-surface-variant">
+                        <FileText className="w-8 h-8 opacity-20" />
+                        <span className="text-[10px] font-bold uppercase">{formatEnum(ev.type)}</span>
+                        <a 
+                          href={`${BACKEND_URL}${ev.url}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-[10px] text-primary hover:underline"
+                        >
+                          Buka File
+                        </a>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -200,7 +232,7 @@ export default async function CrisisDetailPage({ params }: PageProps) {
       >
         <div className="space-y-4 mt-6">
           {report.logs.length > 0 ? (
-            report.logs.map((log) => (
+            report.logs.map((log: any) => (
               <div
                 key={log.id}
                 className="flex gap-4 pl-4 border-l-2 border-primary-container relative"
@@ -212,7 +244,7 @@ export default async function CrisisDetailPage({ params }: PageProps) {
                   </p>
                   <p className="text-sm text-on-surface mt-1">{log.notes}</p>
                   <p className="text-[10px] text-on-surface-variant mt-2">
-                    Penanggung Jawab • {log.createdAt.toLocaleString("id-ID")}
+                    Penanggung Jawab • {new Date(log.createdAt).toLocaleString("id-ID")}
                   </p>
                 </div>
               </div>

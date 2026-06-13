@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -7,16 +7,15 @@ export async function GET(
 ) {
   const { id } = await params;
   try {
-    const patient = await prisma.patient.findUnique({
-      where: { id },
-    });
+    const patient = await api.getPatient(id);
 
     if (!patient) {
       return NextResponse.json({ error: "Patient not found" }, { status: 404 });
     }
 
     return NextResponse.json(patient);
-  } catch {
+  } catch (error) {
+    console.error("Failed to fetch patient:", error);
     return NextResponse.json({ error: "Failed to fetch patient" }, { status: 500 });
   }
 }

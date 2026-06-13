@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { prisma } from "@/lib/prisma";
+import { authOptions } from "@/lib/auth";
+import { api } from "@/lib/api";
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { 
@@ -25,9 +25,12 @@ export default async function ProfilePage() {
     redirect("/");
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-  });
+  let user;
+  try {
+    user = await api.getUser(session.user.id);
+  } catch (error) {
+    redirect("/");
+  }
 
   if (!user) {
     redirect("/");

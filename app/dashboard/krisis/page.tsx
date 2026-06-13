@@ -3,16 +3,18 @@ import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { Plus, Search, AlertTriangle } from "lucide-react";
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import Link from "next/link";
 import { formatEnum } from "@/lib/formatters";
 import { CrisisRowActions } from "./CrisisRowActions";
 
 export default async function CrisisReportingPage() {
-  const reports = await prisma.crisisReport.findMany({
-    orderBy: { date: "desc" },
-    include: { reporter: true },
-  });
+  let reports = [];
+  try {
+    reports = await api.getCrisisReports();
+  } catch (error) {
+    console.error("Failed to fetch crisis reports:", error);
+  }
 
   return (
     <div className="space-y-6">
@@ -83,7 +85,7 @@ export default async function CrisisReportingPage() {
             </thead>
             <tbody className="divide-y divide-outline-variant/30">
               {reports.length > 0 ? (
-                reports.map((item) => (
+                reports.map((item: any) => (
                   <tr
                     key={item.id}
                     className="hover:bg-surface-container-low/60 transition-colors group"
@@ -92,7 +94,7 @@ export default async function CrisisReportingPage() {
                       {item.id.slice(-8).toUpperCase()}
                     </td>
                     <td className="py-3.5 px-3 text-xs text-on-surface-variant">
-                      {item.date.toLocaleDateString("id-ID")}
+                      {new Date(item.date).toLocaleDateString("id-ID")}
                     </td>
                     <td className="py-3.5 px-3 text-sm font-semibold text-on-surface">
                       {item.victimInitials}

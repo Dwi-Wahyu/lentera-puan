@@ -10,16 +10,13 @@ import {
   ChevronRight,
   Package,
 } from "lucide-react";
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import Link from "next/link";
 import { DownloadCounselingRecapButton } from "@/components/DownloadCounselingRecapButton";
 import { formatEnum } from "@/lib/formatters";
 
 export default async function KonselingPage() {
-  const sessions = await prisma.interventionSession.findMany({
-    orderBy: { date: "asc" },
-    include: { counselor: true },
-  });
+  const sessions = await api.getInterventions();
 
   return (
     <div className="space-y-6">
@@ -56,7 +53,7 @@ export default async function KonselingPage() {
         >
           <div className="space-y-3">
             {sessions.length > 0 ? (
-              sessions.map((session, i) => (
+              sessions.map((session: any, i: number) => (
                 <div
                   key={i}
                   className="flex flex-col md:flex-row md:items-center justify-between p-4 rounded-xl border border-outline-variant/50 hover:border-primary/40 hover:bg-primary/2 transition-all group"

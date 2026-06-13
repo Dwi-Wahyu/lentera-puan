@@ -1,5 +1,4 @@
 import React from 'react';
-import { prisma } from "@/lib/prisma";
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { 
@@ -9,14 +8,12 @@ import {
   Clock,
   User
 } from 'lucide-react';
+import { api } from "@/lib/api";
 import Link from 'next/link';
 import { formatEnum } from '@/lib/formatters';
 
 export default async function MonthlyCalendarPage() {
-  const sessions = await prisma.interventionSession.findMany({
-    include: { counselor: true },
-    orderBy: { date: 'asc' }
-  });
+  const sessions = await api.getInterventions();
 
   const now = new Date();
   const currentMonth = now.getMonth();
@@ -65,9 +62,9 @@ export default async function MonthlyCalendarPage() {
           <div key={`empty-${i}`} className="min-h-[120px] bg-surface-container-low/30 border border-outline-variant/30"></div>
         ))}
 
-        {days.map(day => {
+        {days.map((day: number) => {
           const dateStr = new Date(currentYear, currentMonth, day).toDateString();
-          const daySessions = sessions.filter(s => new Date(s.date).toDateString() === dateStr);
+          const daySessions = sessions.filter((s: any) => new Date(s.date).toDateString() === dateStr);
           
           return (
             <div key={day} className="min-h-[120px] bg-surface-container-lowest border border-outline-variant p-2 group hover:bg-surface-container transition-colors">
@@ -83,7 +80,7 @@ export default async function MonthlyCalendarPage() {
               </div>
               
               <div className="mt-2 space-y-1">
-                {daySessions.slice(0, 3).map(session => (
+                {daySessions.slice(0, 3).map((session: any) => (
                   <Link key={session.id} href={`/dashboard/konseling/${session.id}`}>
                     <div className="text-[10px] p-1 rounded bg-secondary-container/50 text-on-secondary-container truncate border border-secondary/10 hover:border-secondary transition-all cursor-pointer">
                       <span className="font-bold">{session.time.split(' ')[0]}</span> {formatEnum(session.type)}
@@ -114,10 +111,10 @@ export default async function MonthlyCalendarPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline-variant">
-                {sessions.map((session) => (
+                {sessions.map((session: any) => (
                   <tr key={session.id} className="hover:bg-surface-container-low transition-colors group text-sm">
                     <td className="py-4 font-bold">
-                      {session.date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
+                      {new Date(session.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                     </td>
                     <td className="py-4">
                       <div className="flex items-center gap-2">

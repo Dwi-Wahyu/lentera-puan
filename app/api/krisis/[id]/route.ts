@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -7,12 +7,7 @@ export async function GET(
 ) {
   const { id } = await params;
   try {
-    const report = await prisma.crisisReport.findUnique({
-      where: { id },
-      include: {
-        evidences: true,
-      }
-    });
+    const report = await api.getCrisisReport(id);
 
     if (!report) {
       return NextResponse.json({ error: "Report not found" }, { status: 404 });
@@ -20,6 +15,7 @@ export async function GET(
 
     return NextResponse.json(report);
   } catch (error) {
+    console.error("Failed to fetch report:", error);
     return NextResponse.json({ error: "Failed to fetch report" }, { status: 500 });
   }
 }

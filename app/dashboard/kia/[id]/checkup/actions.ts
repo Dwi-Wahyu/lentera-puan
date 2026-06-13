@@ -1,8 +1,7 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 export async function createCheckup(patientId: string, formData: FormData) {
   const status = formData.get("status") as string;
@@ -13,30 +12,16 @@ export async function createCheckup(patientId: string, formData: FormData) {
     return { error: "Tanggal dan Status wajib diisi." };
   }
 
-  const date = new Date(dateStr);
-
   try {
-    // 1. Create the checkup record
-    await prisma.medicalCheckup.create({
-      data: {
-        patientId,
-        date,
-        status,
-        notes: notes || null,
-      },
+    await api.createCheckup({
+      patientId,
+      date: dateStr,
+      status,
+      notes: notes || null,
     });
-
-    // 2. Update patient's summary data
-    await prisma.patient.update({
-      where: { id: patientId },
-      data: {
-        lastCheckup: date,
-        nutritionStatus: status // In this system, we update status based on latest checkup
-      }
-    });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating checkup:", error);
-    return { error: "Terjadi kesalahan saat menyimpan data pemeriksaan." };
+    return { error: error.message || "Terjadi kesalahan saat menyimpan data pemeriksaan." };
   }
 
   revalidatePath(`/dashboard/kia/${patientId}`);

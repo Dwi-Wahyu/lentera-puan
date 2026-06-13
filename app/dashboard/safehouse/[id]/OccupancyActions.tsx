@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Button } from '@/components/Button';
-import { UserPlus, UserMinus, Loader2 } from 'lucide-react';
-import { updateOccupancy } from './actions';
-import { useToast } from '@/components/providers/toast-provider';
+import React, { useState } from "react";
+import { Button } from "@/components/Button";
+import { UserPlus, Loader2 } from "lucide-react";
+import { CheckInModal } from "./CheckInModal";
 
 interface OccupancyActionsProps {
   id: string;
@@ -12,40 +11,31 @@ interface OccupancyActionsProps {
   capacity: number;
 }
 
-export const OccupancyActions: React.FC<OccupancyActionsProps> = ({ id, occupied, capacity }) => {
-  const toast = useToast();
-  const [isPending, setIsPending] = useState(false);
-
-  const handleUpdate = async (delta: number) => {
-    setIsPending(true);
-    const res = await updateOccupancy(id, delta);
-    setIsPending(false);
-    
-    if (res.error) {
-      toast.error('Gagal', res.error);
-    } else {
-      toast.success('Berhasil', delta > 0 ? 'Penghuni baru berhasil check-in.' : 'Penghuni telah berhasil check-out.');
-    }
-  };
+export const OccupancyActions: React.FC<OccupancyActionsProps> = ({
+  id,
+  occupied,
+  capacity,
+}) => {
+  const [isCheckInOpen, setIsCheckInOpen] = useState(false);
 
   return (
-    <div className="grid grid-cols-2 gap-3">
-      <Button 
-        variant="primary" 
-        className="w-full gap-2" 
-        disabled={occupied >= capacity || isPending}
-        onClick={() => handleUpdate(1)}
-      >
-        {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />} Check-in
-      </Button>
-      <Button 
-        variant="outline" 
-        className="w-full gap-2" 
-        disabled={occupied <= 0 || isPending}
-        onClick={() => handleUpdate(-1)}
-      >
-        {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserMinus className="w-4 h-4" />} Check-out
-      </Button>
-    </div>
+    <>
+      <div className="pt-4 border-t border-outline-variant flex flex-col gap-3">
+        <Button
+          variant="primary"
+          className="w-full gap-2"
+          disabled={occupied >= capacity}
+          onClick={() => setIsCheckInOpen(true)}
+        >
+          <UserPlus className="w-4 h-4" /> Check-in Penghuni
+        </Button>
+      </div>
+
+      <CheckInModal
+        isOpen={isCheckInOpen}
+        onClose={() => setIsCheckInOpen(false)}
+        safeHouseId={id}
+      />
+    </>
   );
 };

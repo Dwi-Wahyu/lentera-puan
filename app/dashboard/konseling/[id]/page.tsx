@@ -1,5 +1,4 @@
 import React from "react";
-import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import {
@@ -14,6 +13,7 @@ import {
   Share2,
   FileText,
 } from "lucide-react";
+import { api } from "@/lib/api";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SessionActions, SessionStatusButtons } from "./SessionActions";
@@ -25,10 +25,13 @@ interface PageProps {
 
 export default async function SessionDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const session = await prisma.interventionSession.findUnique({
-    where: { id },
-    include: { counselor: true },
-  });
+  let session;
+  
+  try {
+    session = await api.getIntervention(id);
+  } catch (error) {
+    notFound();
+  }
 
   if (!session) {
     notFound();
@@ -54,7 +57,7 @@ export default async function SessionDetailPage({ params }: PageProps) {
             </h1>
             <p className="text-on-surface-variant flex items-center gap-2 text-sm font-medium">
               <Calendar className="w-4 h-4 text-primary" />
-              {session.date.toLocaleDateString("id-ID", {
+              {new Date(session.date).toLocaleDateString("id-ID", {
                 day: "numeric",
                 month: "long",
                 year: "numeric",

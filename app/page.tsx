@@ -74,7 +74,7 @@ export default function LoginPage() {
     }
   };
 
-  if (status === "loading" || status === "authenticated") {
+  if (status === "loading") {
     return (
       <div className="flex min-h-screen bg-surface">
         {/* Sidebar Mock for Skeleton */}
@@ -91,7 +91,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-surface via-surface-container-low to-surface-container flex items-center justify-center p-4 relative overflow-hidden">
+    <main className="min-h-screen bg-linear-to-br from-surface via-surface-container-low to-surface-container flex items-center justify-center p-4 relative overflow-hidden">
       {/* Decorative background blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
