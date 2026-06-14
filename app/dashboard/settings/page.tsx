@@ -8,7 +8,7 @@ import { api } from "@/lib/api";
 export default async function SettingsPage() {
   const session = await getServerSession(authOptions);
 
-  if (session?.user?.role !== "ADMIN") {
+  if (session?.user?.role !== "SUPER_ADMIN") {
     redirect("/dashboard");
   }
 

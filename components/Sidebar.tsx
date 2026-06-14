@@ -47,7 +47,9 @@ export const Sidebar = () => {
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-bold tracking-tight leading-none">LenteraPuan</span>
-              <span className="text-[9px] text-on-primary/50 uppercase tracking-widest font-semibold mt-0.5">Admin Panel</span>
+              <span className="text-[9px] text-on-primary/50 uppercase tracking-widest font-semibold mt-0.5">
+                {session?.user?.role === 'SUPER_ADMIN' ? 'Admin Panel' : 'Panel Petugas'}
+              </span>
             </div>
           </div>
           <button

@@ -5,11 +5,13 @@ import { revalidatePath } from "next/cache";
 
 export async function createCounselingSession(formData: FormData) {
   const counselorId = formData.get("counselorId") as string;
+  const patientId = formData.get("patientId") as string;
+  const reportId = formData.get("reportId") as string;
   const dateStr = formData.get("date") as string;
   const time = formData.get("time") as string;
   const type = formData.get("type") as string;
 
-  if (!counselorId || !dateStr || !time || !type) {
+  if (!counselorId || !patientId || !dateStr || !time || !type) {
     return { error: "Semua field wajib diisi." };
   }
 
@@ -22,6 +24,8 @@ export async function createCounselingSession(formData: FormData) {
   try {
     await api.createIntervention({
       counselorId,
+      patientId,
+      reportId: reportId || undefined,
       date: dateStr,
       time,
       type,

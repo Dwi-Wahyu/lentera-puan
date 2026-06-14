@@ -6,6 +6,7 @@ import { LogOut, Loader2 } from "lucide-react";
 import { checkOutResident } from "./actions";
 import { useToast } from "@/components/providers/toast-provider";
 import { AlertDialog } from "@/components/AlertDialog";
+import { useSession } from "next-auth/react";
 
 interface ResidentActionsProps {
   safeHouseId: string;
@@ -16,9 +17,14 @@ export const ResidentActions: React.FC<ResidentActionsProps> = ({
   safeHouseId,
   reportId,
 }) => {
+  const { data: session } = useSession();
   const toast = useToast();
   const [isPending, setIsPending] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+
+  const isDP3A = session?.user?.role === "DP3A";
+
+  if (!isDP3A) return null;
 
   const handleCheckOut = async () => {
     setIsPending(true);

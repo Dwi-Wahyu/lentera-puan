@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/Button";
 import { UserPlus, Loader2 } from "lucide-react";
 import { CheckInModal } from "./CheckInModal";
+import { useSession } from "next-auth/react";
 
 interface OccupancyActionsProps {
   id: string;
@@ -16,7 +17,12 @@ export const OccupancyActions: React.FC<OccupancyActionsProps> = ({
   occupied,
   capacity,
 }) => {
+  const { data: session } = useSession();
   const [isCheckInOpen, setIsCheckInOpen] = useState(false);
+
+  const isDP3A = session?.user?.role === "DP3A";
+
+  if (!isDP3A) return null;
 
   return (
     <>

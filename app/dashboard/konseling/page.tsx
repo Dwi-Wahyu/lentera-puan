@@ -30,13 +30,6 @@ export default async function KonselingPage() {
             Manajemen pendampingan psikologis dan intervensi.
           </p>
         </div>
-        <div className="flex gap-2">
-          <Link href="/dashboard/konseling/new">
-            <Button variant="primary" size="sm" className="gap-2">
-              <Calendar className="w-3.5 h-3.5" /> Atur Sesi Baru
-            </Button>
-          </Link>
-        </div>
       </div>
 
       {/* Main Grid */}
@@ -128,36 +121,13 @@ export default async function KonselingPage() {
         </Card>
 
         {/* Stats Sidebar */}
-        <Card title="Statistik Sesi">
+        <Card title="Aksi Cepat">
           <div className="space-y-5 mt-1">
-            <div className="p-4 bg-primary/5 rounded-xl border border-primary/10">
-              <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
-                Total Terdaftar
-              </p>
-              <p className="text-4xl font-bold text-primary mt-1 leading-none">
-                {sessions.length}
-              </p>
-            </div>
-            <div className="space-y-4">
-              <div className="p-3 rounded-lg bg-surface-container-low border border-outline-variant/40">
-                <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">
-                  Rata-rata Durasi
-                </p>
-                <div className="flex items-center gap-2 text-on-surface font-bold">
-                  <Clock className="w-3.5 h-3.5 text-primary" />
-                  <span className="text-lg">52 Menit</span>
-                </div>
-              </div>
-              <div className="p-3 rounded-lg bg-surface-container-low border border-outline-variant/40">
-                <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">
-                  Tingkat Kehadiran
-                </p>
-                <div className="flex items-center gap-2 text-on-surface font-bold">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-secondary" />
-                  <span className="text-lg">94%</span>
-                </div>
-              </div>
-            </div>
+            <Link href="/dashboard/konseling/new" className="w-full">
+              <Button variant="primary" className="w-full gap-2">
+                <Calendar className="w-3.5 h-3.5" /> Atur Sesi Baru
+              </Button>
+            </Link>
             <div className="h-px bg-outline-variant/40" />
             <DownloadCounselingRecapButton sessions={sessions} />
           </div>

@@ -88,14 +88,13 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Check-in Penghuni Baru">
       <div className="space-y-6">
-        <form onSubmit={handleSearch} className="relative">
+        <form onSubmit={handleSearch}>
           <Input
             placeholder="Cari Nama Pasien atau NIK..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-10"
+            leftIcon={<Search className="w-4 h-4" />}
           />
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
         </form>
 
         <div className="max-h-60 overflow-y-auto space-y-2 pr-2">

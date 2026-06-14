@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/Button";
-import { History, CheckCircle2, Loader2, Save } from "lucide-react";
+import { History, CheckCircle2, Loader2, Save, Stethoscope } from "lucide-react";
 import {
   addInvestigationLog,
   validateCrisisCase,
@@ -11,14 +11,17 @@ import {
 import { Modal } from "@/components/Modal";
 import { AlertDialog } from "@/components/AlertDialog";
 import { useToast } from "@/components/providers/toast-provider";
+import Link from "next/link";
 
 interface CrisisActionsProps {
   reportId: string;
+  patientId?: string | null;
   status: string;
 }
 
 export const CrisisActions: React.FC<CrisisActionsProps> = ({
   reportId,
+  patientId,
   status,
 }) => {
   const toast = useToast();
@@ -85,6 +88,14 @@ export const CrisisActions: React.FC<CrisisActionsProps> = ({
   return (
     <div className="space-y-4">
       <div className="flex gap-2">
+        {patientId && (
+          <Link href={`/dashboard/konseling/new?patientId=${patientId}&reportId=${reportId}`}>
+            <Button variant="outline" className="gap-2 text-primary border-primary/30 hover:bg-primary/5">
+              <Stethoscope className="w-4 h-4" /> Buat Jadwal Konseling
+            </Button>
+          </Link>
+        )}
+
         <Button
           variant="outline"
           className="gap-2"

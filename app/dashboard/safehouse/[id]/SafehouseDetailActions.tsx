@@ -16,6 +16,7 @@ import { deleteSafeHouse } from "./actions";
 import { useToast } from "@/components/providers/toast-provider";
 import { useRouter } from "next/navigation";
 import { EditSafehouseModal } from "./EditSafehouseModal";
+import { useSession } from "next-auth/react";
 
 interface SafehouseDetailActionsProps {
   id: string;
@@ -26,6 +27,7 @@ export const SafehouseDetailActions: React.FC<SafehouseDetailActionsProps> = ({
   id,
   safeHouse,
 }) => {
+  const { data: session } = useSession();
   const toast = useToast();
   const router = useRouter();
   const [isProtocolOpen, setIsProtocolOpen] = useState(false);
@@ -33,6 +35,8 @@ export const SafehouseDetailActions: React.FC<SafehouseDetailActionsProps> = ({
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
+
+  const isSuperAdmin = session?.user?.role === "SUPERADMIN";
 
   const handleDelete = async () => {
     setIsPending(true);
@@ -58,38 +62,40 @@ export const SafehouseDetailActions: React.FC<SafehouseDetailActionsProps> = ({
         >
           <Lock className="w-4 h-4" /> Protokol Keamanan
         </Button>
-        <div className="relative">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <MoreVertical className="w-5 h-5" />
-          </Button>
+        {isSuperAdmin && (
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              <MoreVertical className="w-5 h-5" />
+            </Button>
 
-          {isMenuOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-xl z-20 py-2 animate-in fade-in zoom-in-95">
-              <button
-                className="w-full text-left px-4 py-2 text-sm hover:bg-surface-container-low transition-colors flex items-center gap-2"
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  setIsEditOpen(true);
-                }}
-              >
-                <Edit className="w-4 h-4" /> Edit Lokasi
-              </button>
-              <button
-                className="w-full text-left px-4 py-2 text-sm hover:bg-surface-container-low transition-colors text-error flex items-center gap-2"
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  setIsAlertOpen(true);
-                }}
-              >
-                <Trash2 className="w-4 h-4" /> Hapus Lokasi
-              </button>
-            </div>
-          )}
-        </div>
+            {isMenuOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-xl z-20 py-2 animate-in fade-in zoom-in-95">
+                <button
+                  className="w-full text-left px-4 py-2 text-sm hover:bg-surface-container-low transition-colors flex items-center gap-2"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setIsEditOpen(true);
+                  }}
+                >
+                  <Edit className="w-4 h-4" /> Edit Lokasi
+                </button>
+                <button
+                  className="w-full text-left px-4 py-2 text-sm hover:bg-surface-container-low transition-colors text-error flex items-center gap-2"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setIsAlertOpen(true);
+                  }}
+                >
+                  <Trash2 className="w-4 h-4" /> Hapus Lokasi
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Protocol Modal */}

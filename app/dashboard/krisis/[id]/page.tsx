@@ -70,7 +70,11 @@ export default async function CrisisDetailPage({ params }: PageProps) {
             </p>
           </div>
         </div>
-        <CrisisActions reportId={report.id} status={report.status} />
+        <CrisisActions 
+          reportId={report.id} 
+          patientId={report.patientId} 
+          status={report.status} 
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

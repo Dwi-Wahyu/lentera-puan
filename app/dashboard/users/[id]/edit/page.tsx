@@ -26,7 +26,7 @@ export default async function EditUserPage({ params }: PageProps) {
   const { id } = await params;
   const session = await getServerSession(authOptions);
 
-  if (session?.user?.role !== "ADMIN") {
+  if (session?.user?.role !== "SUPER_ADMIN") {
     redirect("/dashboard");
   }
 

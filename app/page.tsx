@@ -13,7 +13,7 @@ import LoadingDashboard from "./dashboard/loading";
 
 const demoUsers = [
   { role: "Super Admin", email: "admin@lp.go.id", label: "Admin" },
-  { role: "Petugas DP3A", email: "wahil@lp.go.id", label: "DP3A" },
+  { role: "Petugas DP3A", email: "petugas@lp.go.id", label: "DP3A" },
   { role: "Psikolog Klinis", email: "ahmad@lp.go.id", label: "Psikolog" },
 ];
 
@@ -34,7 +34,7 @@ export default function LoginPage() {
 
   const fillDemo = (demoEmail: string) => {
     setEmail(demoEmail);
-    setPassword("wahil123");
+    setPassword("password123");
     toast.info("Form Terisi", `Menggunakan kredensial demo untuk ${demoEmail}`);
   };
 
@@ -226,7 +226,7 @@ export default function LoginPage() {
             <Info className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
             <p className="text-[10px] text-on-surface-variant leading-relaxed">
               Klik salah satu akun untuk mengisi form otomatis. Password:{" "}
-              <span className="font-bold text-primary">wahil123</span>
+              <span className="font-bold text-primary">password123</span>
             </p>
           </div>
         </div>

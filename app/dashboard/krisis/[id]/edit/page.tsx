@@ -17,6 +17,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { updateCrisisReport } from './actions';
 import { useToast } from '@/components/providers/toast-provider';
+import { Skeleton } from '@/components/Skeleton';
 
 interface CrisisReport {
   id: string;
@@ -89,8 +90,58 @@ export default function EditCrisisReportPage() {
   }
 
   if (isLoading) return (
-    <div className="min-h-[400px] flex items-center justify-center">
-      <Loader2 className="w-8 h-8 animate-spin text-primary" />
+    <div className="max-w-4xl mx-auto space-y-6">
+      <div className="flex items-center gap-4">
+        <div className="w-10 h-10 rounded-lg bg-outline-variant/10 animate-pulse" />
+        <div className="space-y-2">
+          <Skeleton className="h-9 w-64" />
+          <Skeleton className="h-4 w-48" />
+        </div>
+      </div>
+
+      <div className="bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-6 shadow-sm">
+        <div className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2 border-b border-outline-variant pb-2">
+              <Skeleton className="h-5 w-40" />
+            </div>
+            <div className="space-y-1">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <div className="space-y-1">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+
+            <div className="md:col-span-2 mt-4 border-b border-outline-variant pb-2">
+              <Skeleton className="h-5 w-40" />
+            </div>
+            <div className="space-y-1">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <div className="space-y-1">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+
+            <div className="md:col-span-2 mt-4 space-y-2">
+              <Skeleton className="h-4 w-40" />
+              <Skeleton className="h-20 w-full rounded-lg" />
+            </div>
+
+            <div className="md:col-span-2 space-y-2">
+              <Skeleton className="h-4 w-48" />
+              <Skeleton className="h-32 w-full" />
+            </div>
+          </div>
+          <div className="flex justify-end gap-4 pt-4 border-t border-outline-variant">
+            <Skeleton className="h-10 w-24" />
+            <Skeleton className="h-10 w-40" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 
