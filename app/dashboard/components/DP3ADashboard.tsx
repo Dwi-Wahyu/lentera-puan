@@ -8,6 +8,7 @@ import {
   ClipboardList,
   HeartPulse,
   UserCheck,
+  Shield,
 } from "lucide-react";
 
 export function DP3ADashboard({ stats }: any) {
@@ -18,22 +19,30 @@ export function DP3ADashboard({ stats }: any) {
           title="Total Pasien"
           value={stats?.totalPatients || 0}
           icon={<Users className="w-6 h-6" />}
-          color="bg-primary-container text-on-primary-container"
-          trend="Penyintas Terdaftar"
+          color="bg-primary/10 text-primary"
+          trend="Aktif terpantau"
+          label="KIA"
+          variant="primary"
         />
         <StatsCard
-          title="Krisis Aktif"
+          title="Laporan Krisis"
           value={stats?.activeCrisis || 0}
           icon={<AlertTriangle className="w-6 h-6" />}
-          color="bg-error-container text-on-error-container"
-          trend="Butuh Penanganan"
+          color="bg-error/10 text-error"
+          trend="Butuh Intervensi Segera"
+          label="BARU"
+          labelColor="bg-error/10 text-error"
+          trendColor="text-error"
+          variant="error"
         />
         <StatsCard
-          title="Penempatan Baru"
-          value={stats?.newPlacements || 0}
-          icon={<UserCheck className="w-6 h-6" />}
-          color="bg-secondary-container text-on-secondary-container"
-          trend="Minggu Ini"
+          title="Kapasitas"
+          value={`${Math.round(stats?.safehouseOccupancy?.percentage || 0)}%`}
+          icon={<Shield className="w-6 h-6" />}
+          color="bg-secondary/10 text-secondary"
+          trend={`${stats?.safehouseOccupancy?.total_beds - stats?.safehouseOccupancy?.occupied} Bed Tersedia`}
+          label="RUMAH AMAN"
+          variant="secondary"
         />
       </div>
 

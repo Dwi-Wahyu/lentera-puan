@@ -111,8 +111,10 @@ function NewPatientForm() {
               >
                 <option value="">Pilih Kategori</option>
                 <option value="IBU_HAMIL">Ibu Hamil</option>
-                <option value="ANAK">Anak / Balita</option>
                 <option value="IBU_MENYUSUI">Ibu Menyusui</option>
+                <option value="BALITA">Bayi / Balita</option>
+                <option value="ANAK">Anak-anak</option>
+                <option value="UMUM">Umum</option>
               </select>
             </div>
 

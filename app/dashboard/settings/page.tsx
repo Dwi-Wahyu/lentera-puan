@@ -1,8 +1,7 @@
-import React from 'react';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import SettingsClient from './SettingsClient';
+import SettingsClient from "./SettingsClient";
 import { api } from "@/lib/api";
 
 export default async function SettingsPage() {

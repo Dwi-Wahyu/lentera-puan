@@ -15,25 +15,31 @@ export function PsikologDashboard({ stats }: any) {
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatsCard
-          title="Jadwal Mendatang"
+          title="Sesi Aktif"
           value={stats?.unfinishedCounseling || 0}
           icon={<Calendar className="w-6 h-6" />}
-          color="bg-primary-container text-on-primary-container"
-          trend="Sesi Belum Selesai"
+          color="bg-blue-500/10 text-blue-500"
+          trend="Dijadwalkan"
+          label="KONSELING"
+          variant="info"
         />
         <StatsCard
           title="Rata-rata Durasi"
           value="52 Menit"
           icon={<Clock className="w-6 h-6" />}
-          color="bg-secondary-container text-on-secondary-container"
+          color="bg-secondary/10 text-secondary"
           trend="Per Sesi Konseling"
+          label="ANALISA"
+          variant="secondary"
         />
         <StatsCard
           title="Tingkat Kehadiran"
           value="94%"
           icon={<CheckCircle2 className="w-6 h-6" />}
-          color="bg-tertiary-container text-on-tertiary-container"
+          color="bg-tertiary/10 text-tertiary"
           trend="Kumulatif Bulanan"
+          label="PERFORMA"
+          variant="tertiary"
         />
       </div>
 

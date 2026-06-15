@@ -1,14 +1,22 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Card } from '@/components/Card';
-import { Button } from '@/components/Button';
-import { Input } from '@/components/Input';
-import { ArrowLeft, Save, Loader2, Shield, Home, MapPin, AlertCircle } from 'lucide-react';
-import Link from 'next/link';
-import { createSafeHouse } from './actions';
-import { useToast } from '@/components/providers/toast-provider';
-import { useRouter } from 'next/navigation';
+import React, { useState } from "react";
+import { Card } from "@/components/Card";
+import { Button } from "@/components/Button";
+import { Input } from "@/components/Input";
+import {
+  ArrowLeft,
+  Save,
+  Loader2,
+  Shield,
+  Home,
+  MapPin,
+  AlertCircle,
+} from "lucide-react";
+import Link from "next/link";
+import { createSafeHouse } from "./actions";
+import { useToast } from "@/components/providers/toast-provider";
+import { useRouter } from "next/navigation";
 
 export default function NewSafeHousePage() {
   const toast = useToast();
@@ -22,11 +30,11 @@ export default function NewSafeHousePage() {
     const result = await createSafeHouse(formData);
     if (result?.error) {
       setError(result.error);
-      toast.error('Gagal Menyimpan', result.error);
+      toast.error("Gagal Menyimpan", result.error);
       setIsPending(false);
     } else {
-      toast.success('Berhasil', 'Data Rumah Aman berhasil didaftarkan.');
-      router.push('/dashboard/safehouse');
+      toast.success("Berhasil", "Data Rumah Aman berhasil didaftarkan.");
+      router.push("/dashboard/safehouse");
     }
   }
 
@@ -39,8 +47,12 @@ export default function NewSafeHousePage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-on-surface">Tambah Rumah Aman</h1>
-          <p className="text-on-surface-variant">Daftarkan lokasi perlindungan baru ke dalam sistem.</p>
+          <h1 className="text-3xl font-bold text-on-surface">
+            Tambah Rumah Aman
+          </h1>
+          <p className="text-on-surface-variant">
+            Daftarkan lokasi perlindungan baru ke dalam sistem.
+          </p>
         </div>
       </div>
 
@@ -50,9 +62,11 @@ export default function NewSafeHousePage() {
             {/* General Info Section */}
             <div className="md:col-span-2 flex items-center gap-2 text-primary border-b border-outline-variant pb-2">
               <Home className="w-5 h-5" />
-              <h2 className="font-bold uppercase tracking-wider text-sm">Informasi Dasar</h2>
+              <h2 className="font-bold uppercase tracking-wider text-sm">
+                Informasi Dasar
+              </h2>
             </div>
-            
+
             <Input
               label="Nama Lokasi"
               name="name"
@@ -60,7 +74,7 @@ export default function NewSafeHousePage() {
               required
               disabled={isPending}
             />
-            
+
             <Input
               label="Kapasitas Total (Bed)"
               name="capacity"
@@ -74,14 +88,18 @@ export default function NewSafeHousePage() {
             {/* Security & Location Section */}
             <div className="md:col-span-2 flex items-center gap-2 text-primary border-b border-outline-variant pb-2 mt-4">
               <Shield className="w-5 h-5" />
-              <h2 className="font-bold uppercase tracking-wider text-sm">Keamanan & Lokasi</h2>
+              <h2 className="font-bold uppercase tracking-wider text-sm">
+                Keamanan & Lokasi
+              </h2>
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-semibold text-on-surface">Tingkat Keamanan</label>
-              <select 
-                name="safetyLevel" 
-                required 
+              <label className="text-sm font-semibold text-on-surface">
+                Tingkat Keamanan
+              </label>
+              <select
+                name="safetyLevel"
+                required
                 disabled={isPending}
                 className="px-4 py-2 border rounded bg-surface-container-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all border-outline-variant"
               >
@@ -94,11 +112,13 @@ export default function NewSafeHousePage() {
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-semibold text-on-surface">Alamat / Koordinat (Opsional)</label>
+              <label className="text-sm font-semibold text-on-surface">
+                Alamat / Koordinat (Opsional)
+              </label>
               <div className="relative">
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-outline-variant" />
-                <input 
-                  name="location" 
+                <input
+                  name="location"
                   disabled={isPending}
                   placeholder="Detail lokasi rahasia"
                   className="w-full pl-10 px-4 py-2 border rounded bg-surface-container-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all border-outline-variant"
@@ -116,7 +136,9 @@ export default function NewSafeHousePage() {
 
           <div className="flex items-center justify-end gap-4 pt-4 border-t border-outline-variant">
             <Link href="/dashboard/safehouse">
-              <Button variant="ghost" type="button" disabled={isPending}>Batal</Button>
+              <Button variant="ghost" type="button" disabled={isPending}>
+                Batal
+              </Button>
             </Link>
             <Button type="submit" className="gap-2 px-8" disabled={isPending}>
               {isPending ? (
@@ -136,10 +158,13 @@ export default function NewSafeHousePage() {
 
       <div className="bg-secondary-container/10 p-6 rounded-xl border border-dashed border-secondary/30">
         <h3 className="text-sm font-bold text-secondary mb-2 flex items-center gap-2">
-          🔒 Protokol Keamanan
+          Protokol Keamanan
         </h3>
         <p className="text-xs text-on-surface-variant leading-relaxed">
-          Data lokasi Rumah Aman bersifat **Sangat Rahasia**. Pastikan Anda hanya memasukkan detail yang diperlukan untuk koordinasi internal. Informasi ini dilindungi oleh enkripsi tingkat tinggi untuk menjaga keselamatan penghuni.
+          Data lokasi Rumah Aman bersifat **Sangat Rahasia**. Pastikan Anda
+          hanya memasukkan detail yang diperlukan untuk koordinasi internal.
+          Informasi ini dilindungi oleh enkripsi tingkat tinggi untuk menjaga
+          keselamatan penghuni.
         </p>
       </div>
     </div>

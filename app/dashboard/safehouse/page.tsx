@@ -36,7 +36,9 @@ export default async function SafehousePage() {
         <div className="p-8 text-center bg-error-container text-on-error-container rounded-xl border border-error/20 shadow-sm">
           <h2 className="text-lg font-bold">Terjadi Kendala Koneksi</h2>
           <p className="mt-2 text-sm opacity-90">{error}</p>
-          <p className="mt-4 text-xs italic opacity-70">Pastikan server backend (Port 3001) sudah dijalankan.</p>
+          <p className="mt-4 text-xs italic opacity-70">
+            Pastikan server backend (Port 3001) sudah dijalankan.
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -102,17 +104,6 @@ export default async function SafehousePage() {
           )}
         </div>
       )}
-
-      <Card
-        title="Permintaan Penempatan Aktif"
-        subtitle="Korban yang membutuhkan rumah aman segera"
-      >
-        <div className="divide-y divide-outline-variant">
-          <div className="py-8 text-center text-on-surface-variant italic">
-            Belum ada permintaan penempatan baru.
-          </div>
-        </div>
-      </Card>
     </div>
   );
 }

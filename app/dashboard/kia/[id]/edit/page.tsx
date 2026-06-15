@@ -146,8 +146,10 @@ export default function EditPatientPage() {
                 className="px-4 py-2 border rounded bg-surface-container-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all border-outline-variant"
               >
                 <option value="IBU_HAMIL">Ibu Hamil</option>
-                <option value="ANAK">Anak / Balita</option>
                 <option value="IBU_MENYUSUI">Ibu Menyusui</option>
+                <option value="BALITA">Bayi / Balita</option>
+                <option value="ANAK">Anak-anak</option>
+                <option value="UMUM">Umum</option>
               </select>
             </div>
           </div>

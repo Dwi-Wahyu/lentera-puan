@@ -18,22 +18,28 @@ export function SuperAdminDashboard({ stats }: any) {
           title="Total User Sistem"
           value={stats?.totalUsers || 0}
           icon={<Users className="w-6 h-6" />}
-          color="bg-primary-container text-on-primary-container"
+          color="bg-primary/10 text-primary"
           trend="Semua Role Petugas"
+          label="SISTEM"
+          variant="primary"
         />
         <StatsCard
           title="User Aktif Hari Ini"
           value={stats?.dailyUserActivities || 0}
           icon={<Activity className="w-6 h-6" />}
-          color="bg-secondary-container text-on-secondary-container"
+          color="bg-secondary/10 text-secondary"
           trend="Aktivitas Unik"
+          label="AKTIVITAS"
+          variant="secondary"
         />
         <StatsCard
           title="Okupansi Safehouse"
           value={`${stats?.safehouseOccupancy?.occupied || 0}/${stats?.safehouseOccupancy?.capacity || 0}`}
           icon={<Shield className="w-6 h-6" />}
-          color="bg-tertiary-container text-on-tertiary-container"
+          color="bg-tertiary/10 text-tertiary"
           trend={`${Math.round(stats?.safehouseOccupancy?.percentage || 0)}% Terpakai`}
+          label="RUMAH AMAN"
+          variant="tertiary"
         />
       </div>
 

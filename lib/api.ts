@@ -32,7 +32,8 @@ export async function fetchWithAuth(endpoint: string, options: RequestInit = {})
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `API Error: ${response.status} ${response.statusText}`);
+      const errorMessage = errorData.detail || errorData.message || `API Error: ${response.status} ${response.statusText}`;
+      throw new Error(typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage));
     }
 
     return response.json();
@@ -109,5 +110,8 @@ export const api = {
   getDashboardStats: () => fetchWithAuth("/system/stats"),
   getConfig: () => fetchWithAuth("/system/config"),
   updateConfig: (data: any) => fetchWithAuth("/system/config", { method: "PATCH", body: JSON.stringify(data) }),
-  getAuditLogs: () => fetchWithAuth("/system/audit-logs"),
+  getAuditLogs: (params?: any) => {
+    const query = new URLSearchParams(params).toString();
+    return fetchWithAuth(`/system/audit-logs${query ? `?${query}` : ""}`);
+  },
 };

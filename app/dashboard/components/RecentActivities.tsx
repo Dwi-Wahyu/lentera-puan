@@ -1,4 +1,3 @@
-import React from "react";
 import { Card } from "@/components/Card";
 import { Clock, ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -6,7 +5,7 @@ import { formatEnum } from "@/lib/formatters";
 
 export function RecentActivities({ activities, role }: any) {
   return (
-    <Card title="Aktivitas Terbaru Sistem" className="lg:col-span-2">
+    <Card title="Aktivitas Terbaru Sistem" className="w-full col-span-3">
       <div className="space-y-6 mt-4">
         {activities && activities.length > 0 ? (
           activities.map((activity: any) => (

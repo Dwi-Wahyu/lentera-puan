@@ -36,7 +36,7 @@ export const SafehouseDetailActions: React.FC<SafehouseDetailActionsProps> = ({
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
-  const isSuperAdmin = session?.user?.role === "SUPERADMIN";
+  const isSuperAdmin = session?.user?.role === "SUPER_ADMIN";
 
   const handleDelete = async () => {
     setIsPending(true);

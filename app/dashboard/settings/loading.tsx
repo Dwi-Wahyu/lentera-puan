@@ -3,7 +3,7 @@ import { Card } from "@/components/Card";
 
 export default function LoadingSettings() {
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-pulse">
+    <div className=" mx-auto space-y-6 animate-pulse">
       {/* Header Skeleton */}
       <div className="flex justify-between items-center">
         <div className="space-y-2">
@@ -38,7 +38,10 @@ export default function LoadingSettings() {
         <Card title="Keamanan Lanjutan">
           <div className="space-y-4 mt-2">
             {[1, 2].map((i) => (
-              <div key={i} className="flex justify-between items-center p-3 bg-surface-container/50 rounded-lg">
+              <div
+                key={i}
+                className="flex justify-between items-center p-3 bg-surface-container/50 rounded-lg"
+              >
                 <div className="flex items-center gap-3">
                   <div className="w-5 h-5 bg-surface-container rounded" />
                   <div className="space-y-1.5">
