@@ -28,7 +28,7 @@ export const menuItems: MenuItem[] = [
     icon: Baby,
     label: "Manajemen KIA",
     href: "/dashboard/kia",
-    roles: ["SUPER_ADMIN", "DP3A", "KESRE"],
+    roles: ["SUPER_ADMIN", "DP3A"],
   },
   {
     icon: AlertTriangle,
