@@ -2,9 +2,20 @@
 
 import { api } from "@/lib/api";
 import { revalidatePath } from "next/cache";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
 export async function createCounselingSession(formData: FormData) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return { error: "Unauthorized" };
+  }
+
   const counselorId = formData.get("counselorId") as string;
+  if (session.user.role === "KONSELOR" && counselorId !== session.user.id) {
+    return { error: "Unauthorized: Konselor hanya dapat menjadwalkan sesi untuk dirinya sendiri." };
+  }
+
   const patientId = formData.get("patientId") as string;
   const reportId = formData.get("reportId") as string;
   const dateStr = formData.get("date") as string;

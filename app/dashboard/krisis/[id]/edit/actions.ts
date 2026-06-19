@@ -7,7 +7,9 @@ import { authOptions } from "@/lib/auth";
 
 export async function updateCrisisReport(id: string, formData: FormData) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) return { error: "Unauthorized" };
+  if (!session?.user?.id || (session.user.role !== "ADMIN" && session.user.role !== "DP3A")) {
+    return { error: "Unauthorized" };
+  }
 
   const victimInitials = formData.get("victimInitials") as string;
   const type = formData.get("type") as string;

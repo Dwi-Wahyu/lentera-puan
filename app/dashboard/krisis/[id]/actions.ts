@@ -17,7 +17,7 @@ export async function addInvestigationLog(reportId: string, action: string, note
 
 export async function validateCrisisCase(reportId: string) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) return { error: "Unauthorized" };
+  if (!session?.user?.id || session.user.role !== "DP3A") return { error: "Unauthorized" };
 
   try {
     await api.updateCrisisReport(reportId, { status: "TERVALIDASI" });
@@ -35,7 +35,7 @@ export async function validateCrisisCase(reportId: string) {
 
 export async function completeCrisisCase(reportId: string) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) return { error: "Unauthorized" };
+  if (!session?.user?.id || session.user.role !== "DP3A") return { error: "Unauthorized" };
 
   try {
     await api.updateCrisisReport(reportId, { status: "SELESAI" });

@@ -22,6 +22,7 @@ import Link from "next/link";
 import { createCounselingSession } from "./actions";
 import { useToast } from "@/components/providers/toast-provider";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 interface Counselor {
   id: string;
@@ -43,10 +44,13 @@ interface PatientShort {
 }
 
 export default function NewCounselingPage() {
+  const { data: session } = useSession();
   const toast = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const isCounselor = session?.user?.role === "KONSELOR";
 
   const initialPatientId = searchParams.get("patientId");
   const initialReportId = searchParams.get("reportId");
@@ -413,16 +417,28 @@ export default function NewCounselingPage() {
               <select
                 name="counselorId"
                 required
-                disabled={isPending}
-                className="px-4 py-2 border rounded bg-surface-container-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all border-outline-variant"
+                disabled={isPending || isCounselor}
+                value={isCounselor ? (session?.user?.id || "") : undefined}
+                className="px-4 py-2 border rounded bg-surface-container-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all border-outline-variant disabled:opacity-75"
               >
-                <option value="">Pilih Pendamping</option>
-                {counselors.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name} ({c.role})
+                {isCounselor ? (
+                  <option value={session?.user?.id || ""}>
+                    {session?.user?.name}
                   </option>
-                ))}
+                ) : (
+                  <>
+                    <option value="">Pilih Pendamping</option>
+                    {counselors.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name} ({c.role})
+                      </option>
+                    ))}
+                  </>
+                )}
               </select>
+              {isCounselor && (
+                <input type="hidden" name="counselorId" value={session?.user?.id || ""} />
+              )}
             </div>
 
             <div className="flex flex-col gap-1">

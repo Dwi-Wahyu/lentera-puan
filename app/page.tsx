@@ -13,7 +13,7 @@ import LoadingDashboard from "./dashboard/loading";
 
 const demoUsers = [
   { role: "Super Admin", email: "admin@lp.go.id", label: "Admin" },
-  { role: "Petugas DP3A", email: "petugas@lp.go.id", label: "DP3A" },
+  { role: "Petugas DP3A", email: "dp3a@lp.go.id", label: "DP3A" },
   { role: "Psikolog Klinis", email: "ahmad@lp.go.id", label: "Psikolog" },
 ];
 

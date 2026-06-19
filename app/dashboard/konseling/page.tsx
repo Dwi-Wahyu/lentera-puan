@@ -14,9 +14,17 @@ import { api } from "@/lib/api";
 import Link from "next/link";
 import { DownloadCounselingRecapButton } from "@/components/DownloadCounselingRecapButton";
 import { formatEnum } from "@/lib/formatters";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
 export default async function KonselingPage() {
-  const sessions = await api.getInterventions();
+  const authSession = await getServerSession(authOptions);
+  const isCounselor = authSession?.user?.role === "KONSELOR";
+
+  let sessions = await api.getInterventions();
+  if (isCounselor) {
+    sessions = sessions.filter((session: any) => session.counselor?.id === authSession?.user?.id);
+  }
 
   return (
     <div className="space-y-6">

@@ -1,21 +1,47 @@
 import React from "react";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
-import { Input } from "@/components/Input";
-import { Plus, Search, FileText, Baby, Users, AlertCircle } from "lucide-react";
+import { Plus, FileText, Baby, Users, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { api } from "@/lib/api";
 import { formatEnum } from "@/lib/formatters";
+import { KiaFilters } from "./components/KiaFilters";
 
-export default async function KIAPage() {
+export const dynamic = "force-dynamic";
+
+interface PageProps {
+  searchParams: Promise<{
+    search?: string;
+    category?: string;
+    nutritionStatus?: string;
+  }>;
+}
+
+export default async function KIAPage({ searchParams }: PageProps) {
+  const resolvedParams = await searchParams;
+  const search = resolvedParams.search || "";
+  const category = resolvedParams.category || "";
+  const nutritionStatus = resolvedParams.nutritionStatus || "";
+
   let patients = [];
   let stats = { pregnantCount: 0, childrenCount: 0, stuntingRiskCount: 0 };
 
   try {
-    patients = await api.getPatients();
-    stats.pregnantCount = patients.filter((p: any) => p.category === "IBU_HAMIL").length;
-    stats.childrenCount = patients.filter((p: any) => p.category === "ANAK").length;
-    stats.stuntingRiskCount = patients.filter((p: any) => p.nutritionStatus === "RISIKO_TINGGI").length;
+    const allPatients = await api.getPatients();
+    stats.pregnantCount = allPatients.filter((p: any) => p.category === "IBU_HAMIL").length;
+    stats.childrenCount = allPatients.filter((p: any) => p.category === "ANAK").length;
+    stats.stuntingRiskCount = allPatients.filter((p: any) => p.nutritionStatus === "RISIKO_TINGGI").length;
+
+    const params: any = {};
+    if (search) params.search = search;
+    if (category) params.category = category;
+    if (nutritionStatus) params.nutritionStatus = nutritionStatus;
+
+    if (Object.keys(params).length > 0) {
+      patients = await api.getPatients(params);
+    } else {
+      patients = allPatients;
+    }
   } catch (error) {
     console.error("Failed to fetch KIA data:", error);
   }
@@ -81,38 +107,7 @@ export default async function KIAPage() {
       <Card>
         <div className="space-y-4">
           {/* Filters */}
-          <div className="flex flex-col md:flex-row gap-3">
-            <div className="flex-1">
-              <Input
-                placeholder="Cari Nama Pasien atau NIK..."
-                leftIcon={<Search className="w-4 h-4" />}
-              />
-            </div>
-            <div className="flex gap-2">
-              <div className="relative">
-                <select className="pl-9 pr-4 py-2.5 border border-outline-variant/70 rounded-lg bg-surface-container-lowest text-on-surface text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary appearance-none min-w-[150px] hover:border-outline transition-colors">
-                  <option value="">Semua Kategori</option>
-                  <option value="IBU_HAMIL">Ibu Hamil</option>
-                  <option value="ANAK">Anak / Balita</option>
-                  <option value="IBU_MENYUSUI">Ibu Menyusui</option>
-                </select>
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant pointer-events-none">
-                  <Users className="w-3.5 h-3.5" />
-                </div>
-              </div>
-              <div className="relative">
-                <select className="pl-9 pr-4 py-2.5 border border-outline-variant/70 rounded-lg bg-surface-container-lowest text-on-surface text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary appearance-none min-w-[150px] hover:border-outline transition-colors">
-                  <option value="">Semua Status</option>
-                  <option value="NORMAL">Normal</option>
-                  <option value="PERLU_PERHATIAN">Perlu Perhatian</option>
-                  <option value="RISIKO_TINGGI">Risiko Tinggi</option>
-                </select>
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant pointer-events-none">
-                  <AlertCircle className="w-3.5 h-3.5" />
-                </div>
-              </div>
-            </div>
-          </div>
+          <KiaFilters />
 
           {/* Table */}
           <div className="overflow-x-auto">

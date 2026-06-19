@@ -1,9 +1,7 @@
 import React from "react";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
-import { Input } from "@/components/Input";
 import {
-  Search,
   UserPlus,
   ShieldCheck,
   Mail,
@@ -16,8 +14,22 @@ import { formatEnum } from "@/lib/formatters";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { UserFilters } from "./components/UserFilters";
 
-export default async function UsersPage() {
+export const dynamic = "force-dynamic";
+
+interface PageProps {
+  searchParams: Promise<{
+    search?: string;
+    role?: string;
+  }>;
+}
+
+export default async function UsersPage({ searchParams }: PageProps) {
+  const resolvedParams = await searchParams;
+  const search = resolvedParams.search || "";
+  const role = resolvedParams.role || "";
+
   const session = await getServerSession(authOptions);
 
   // Role restriction: Only SUPER_ADMIN can access User Management
@@ -25,7 +37,11 @@ export default async function UsersPage() {
     redirect("/dashboard");
   }
 
-  const users = await api.getUsers();
+  const params: any = {};
+  if (search) params.search = search;
+  if (role) params.role = role;
+
+  const users = await api.getUsers(params);
 
   return (
     <div className="space-y-6">
@@ -44,24 +60,7 @@ export default async function UsersPage() {
       </div>
 
       <Card>
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <div className="flex-1">
-            <Input
-              placeholder="Cari Nama atau NIP..."
-              leftIcon={<Search className="w-4 h-4" />}
-            />
-          </div>
-          <div className="flex gap-2">
-            <div className="relative">
-              <select className="pl-4 pr-4 py-2 border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary appearance-none min-w-[160px] text-sm font-medium">
-                <option value="">Semua Peran</option>
-                <option value="DP3A">Petugas DP3A</option>
-                <option value="PSIKOLOG">Psikolog</option>
-                <option value="ADMIN">Administrator</option>
-              </select>
-            </div>
-          </div>
-        </div>
+        <UserFilters />
 
         <div className="overflow-x-auto">
           <table className="w-full">

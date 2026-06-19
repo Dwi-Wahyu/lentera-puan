@@ -16,13 +16,13 @@ export const SafehouseActions = () => {
   return (
     <>
       <div className="flex gap-3">
-        <Button
+        {/* <Button
           variant="outline"
           className="gap-2"
           onClick={() => setIsModalOpen(true)}
         >
           <Search className="w-4 h-4" /> Cek Ketersediaan
-        </Button>
+        </Button> */}
         {isSuperAdmin && (
           <Link href="/dashboard/safehouse/new">
             <Button variant="primary" className="gap-2">
@@ -32,10 +32,10 @@ export const SafehouseActions = () => {
         )}
       </div>
 
-      <AvailabilityModal
+      {/* <AvailabilityModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-      />
+      /> */}
     </>
   );
 };

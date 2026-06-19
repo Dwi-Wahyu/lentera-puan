@@ -15,9 +15,11 @@ import {
 } from "lucide-react";
 import { api } from "@/lib/api";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { SessionActions, SessionStatusButtons } from "./SessionActions";
 import { formatEnum } from "@/lib/formatters";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -26,7 +28,7 @@ interface PageProps {
 export default async function SessionDetailPage({ params }: PageProps) {
   const { id } = await params;
   let session;
-  
+
   try {
     session = await api.getIntervention(id);
   } catch (error) {
@@ -35,6 +37,13 @@ export default async function SessionDetailPage({ params }: PageProps) {
 
   if (!session) {
     notFound();
+  }
+
+  const authSession = await getServerSession(authOptions);
+  const isCounselor = authSession?.user?.role === "KONSELOR";
+
+  if (isCounselor && session.counselor.id !== authSession?.user?.id) {
+    redirect("/dashboard/konseling");
   }
 
   return (
@@ -66,13 +75,6 @@ export default async function SessionDetailPage({ params }: PageProps) {
           </div>
         </div>
         <div className="flex items-center gap-2 self-end md:self-auto">
-          <Button variant="outline" size="sm" className="gap-2">
-            <Printer className="w-4 h-4" /> Cetak
-          </Button>
-          <Button variant="outline" size="sm" className="gap-2">
-            <Share2 className="w-4 h-4" /> Bagikan
-          </Button>
-          <div className="h-8 w-px bg-outline-variant mx-1 hidden md:block"></div>
           <SessionActions sessionId={id} />
         </div>
       </div>

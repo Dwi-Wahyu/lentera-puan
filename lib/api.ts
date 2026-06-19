@@ -50,7 +50,10 @@ export const api = {
   me: () => fetchWithAuth("/auth/me"),
 
   // Users
-  getUsers: () => fetchWithAuth("/users"),
+  getUsers: (params?: any) => {
+    const query = new URLSearchParams(params).toString();
+    return fetchWithAuth(`/users${query ? `?${query}` : ""}`);
+  },
   getUser: (id: string) => fetchWithAuth(`/users/${id}`),
   createUser: (data: any) => fetchWithAuth("/users", { method: "POST", body: JSON.stringify(data) }),
   updateUser: (id: string, data: any) => fetchWithAuth(`/users/${id}`, { method: "PATCH", body: JSON.stringify(data) }),

@@ -18,6 +18,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { updateCrisisReport } from './actions';
 import { useToast } from '@/components/providers/toast-provider';
 import { Skeleton } from '@/components/Skeleton';
+import { useSession } from 'next-auth/react';
 
 interface CrisisReport {
   id: string;
@@ -29,6 +30,7 @@ interface CrisisReport {
 }
 
 export default function EditCrisisReportPage() {
+  const { data: session, status: sessionStatus } = useSession();
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
@@ -40,6 +42,17 @@ export default function EditCrisisReportPage() {
   const [fileError, setFileError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (sessionStatus === "loading") return;
+    if (!session || (session.user.role !== "ADMIN" && session.user.role !== "DP3A")) {
+      toast.error('Akses Ditolak', 'Hanya Administrator dan Petugas DP3A yang dapat mengedit laporan.');
+      router.push('/dashboard/krisis');
+    }
+  }, [session, sessionStatus, router, toast]);
+
+  useEffect(() => {
+    if (sessionStatus === "loading" || !session) return;
+    if (session.user.role !== "ADMIN" && session.user.role !== "DP3A") return;
+
     async function fetchReport() {
       try {
         const res = await fetch(`/api/krisis/${id}`);
@@ -54,7 +67,7 @@ export default function EditCrisisReportPage() {
       }
     }
     fetchReport();
-  }, [id, router, toast]);
+  }, [id, router, toast, session, sessionStatus]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -89,7 +102,7 @@ export default function EditCrisisReportPage() {
     }
   }
 
-  if (isLoading) return (
+  if (isLoading || sessionStatus === "loading") return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
         <div className="w-10 h-10 rounded-lg bg-outline-variant/10 animate-pulse" />
@@ -144,6 +157,9 @@ export default function EditCrisisReportPage() {
       </div>
     </div>
   );
+
+  const isAuthorized = session && (session.user.role === "ADMIN" || session.user.role === "DP3A");
+  if (!isAuthorized) return null;
 
   if (!report) return null;
 

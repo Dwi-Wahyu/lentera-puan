@@ -1,17 +1,40 @@
 import React from "react";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
-import { Input } from "@/components/Input";
-import { Plus, Search, AlertTriangle } from "lucide-react";
+import { Plus, AlertTriangle } from "lucide-react";
 import { api } from "@/lib/api";
 import Link from "next/link";
 import { formatEnum } from "@/lib/formatters";
 import { CrisisRowActions } from "./CrisisRowActions";
+import { CrisisFilters } from "./components/CrisisFilters";
 
-export default async function CrisisReportingPage() {
+export const dynamic = "force-dynamic";
+
+interface PageProps {
+  searchParams: Promise<{
+    search?: string;
+    status?: string;
+    priority?: string;
+    type?: string;
+  }>;
+}
+
+export default async function CrisisReportingPage({ searchParams }: PageProps) {
+  const resolvedParams = await searchParams;
+  const search = resolvedParams.search || "";
+  const status = resolvedParams.status || "";
+  const priority = resolvedParams.priority || "";
+  const type = resolvedParams.type || "";
+
   let reports = [];
   try {
-    reports = await api.getCrisisReports();
+    const params: any = {};
+    if (search) params.search = search;
+    if (status) params.status = status;
+    if (priority) params.priority = priority;
+    if (type) params.type = type;
+
+    reports = await api.getCrisisReports(params);
   } catch (error) {
     console.error("Failed to fetch crisis reports:", error);
   }
@@ -37,23 +60,7 @@ export default async function CrisisReportingPage() {
 
       <Card>
         {/* Filters */}
-        <div className="flex flex-col md:flex-row gap-3 mb-5">
-          <div className="flex-1">
-            <Input
-              placeholder="Cari ID Kasus atau Inisial..."
-              leftIcon={<Search className="w-4 h-4" />}
-            />
-          </div>
-          <div className="flex gap-2">
-            <select className="px-4 py-2.5 border border-outline-variant/70 rounded-lg bg-surface-container-lowest text-on-surface text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary appearance-none min-w-[160px] hover:border-outline transition-colors">
-              <option value="">Semua Status</option>
-              <option value="BARU">Baru</option>
-              <option value="INVESTIGASI">Dalam Investigasi</option>
-              <option value="TERVALIDASI">Tervalidasi</option>
-              <option value="SELESAI">Selesai</option>
-            </select>
-          </div>
-        </div>
+        <CrisisFilters />
 
         {/* Table */}
         <div className="overflow-x-auto">

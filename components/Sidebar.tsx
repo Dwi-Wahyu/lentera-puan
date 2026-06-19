@@ -46,9 +46,13 @@ export const Sidebar = () => {
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-sm font-bold tracking-tight leading-none">LenteraPuan</span>
+              <span className="text-sm font-bold tracking-tight leading-none">
+                LenteraPuan
+              </span>
               <span className="text-[9px] text-on-primary/50 uppercase tracking-widest font-semibold mt-0.5">
-                {session?.user?.role === 'SUPER_ADMIN' ? 'Admin Panel' : 'Panel Petugas'}
+                {session?.user?.role === "SUPER_ADMIN"
+                  ? "Admin Panel"
+                  : "Panel Petugas"}
               </span>
             </div>
           </div>
@@ -68,38 +72,6 @@ export const Sidebar = () => {
           }}
         >
           <SidebarNav />
-        </div>
-
-        {/* User Profile Area */}
-        <div className="border-t border-white/10 p-4">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-3 min-w-0">
-              {/* Avatar */}
-              <div className="w-9 h-9 rounded-full bg-white/15 ring-2 ring-white/20 flex-shrink-0 flex items-center justify-center font-bold overflow-hidden">
-                {session?.user?.image ? (
-                  <Image
-                    src={session.user.image}
-                    alt="Avatar"
-                    width={36}
-                    height={36}
-                    className="object-cover"
-                  />
-                ) : (
-                  <User className="w-5 h-5 text-on-primary/80" />
-                )}
-              </div>
-              {/* Name + Role */}
-              <div className="flex flex-col min-w-0">
-                <span className="text-sm font-semibold truncate leading-tight">
-                  {session?.user?.name || "User"}
-                </span>
-                <span className="text-[9px] font-bold uppercase tracking-widest text-on-primary/50 mt-0.5">
-                  {formatEnum(session?.user?.role || "")}
-                </span>
-              </div>
-            </div>
-            <LogoutButton />
-          </div>
         </div>
       </aside>
     </>

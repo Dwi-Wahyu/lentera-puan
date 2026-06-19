@@ -12,6 +12,7 @@ import { Modal } from "@/components/Modal";
 import { AlertDialog } from "@/components/AlertDialog";
 import { useToast } from "@/components/providers/toast-provider";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 interface CrisisActionsProps {
   reportId: string;
@@ -24,6 +25,7 @@ export const CrisisActions: React.FC<CrisisActionsProps> = ({
   patientId,
   status,
 }) => {
+  const { data: session } = useSession();
   const toast = useToast();
   const [isModalLogOpen, setIsModalLogOpen] = useState(false);
   const [isAlertValidateOpen, setIsAlertValidateOpen] = useState(false);
@@ -31,6 +33,8 @@ export const CrisisActions: React.FC<CrisisActionsProps> = ({
 
   const [logNotes, setLogNotes] = useState("");
   const [isPending, setIsPending] = useState(false);
+
+  const isDP3A = session?.user?.role === "DP3A";
 
   const handleUpdateLog = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,7 +108,7 @@ export const CrisisActions: React.FC<CrisisActionsProps> = ({
           <History className="w-4 h-4" /> Update Log
         </Button>
 
-        {status === "BARU" && (
+        {isDP3A && status === "BARU" && (
           <Button
             variant="primary"
             className="gap-2"
@@ -119,7 +123,7 @@ export const CrisisActions: React.FC<CrisisActionsProps> = ({
           </Button>
         )}
 
-        {(status === "TERVALIDASI" ||
+        {isDP3A && (status === "TERVALIDASI" ||
           status === "BARU" ||
           status === "INVESTIGASI") && (
           <Button

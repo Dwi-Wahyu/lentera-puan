@@ -2,9 +2,24 @@
 
 import { api } from "@/lib/api";
 import { revalidatePath } from "next/cache";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
 export async function updateSessionStatus(id: string, status: string) {
+  const sessionUser = await getServerSession(authOptions);
+  if (!sessionUser?.user?.id) {
+    return { error: "Unauthorized" };
+  }
+
   try {
+    const intervention = await api.getIntervention(id);
+    if (!intervention) {
+      return { error: "Sesi tidak ditemukan." };
+    }
+    if (sessionUser.user.role === "KONSELOR" && intervention.counselor?.id !== sessionUser.user.id) {
+      return { error: "Unauthorized" };
+    }
+
     await api.updateIntervention(id, { status });
 
     revalidatePath(`/dashboard/konseling/${id}`);
@@ -17,12 +32,18 @@ export async function updateSessionStatus(id: string, status: string) {
 }
 
 export async function deleteSession(id: string) {
-  try {
-    // Check if session exists first
-    const session = await api.getIntervention(id);
+  const sessionUser = await getServerSession(authOptions);
+  if (!sessionUser?.user?.id) {
+    return { error: "Unauthorized" };
+  }
 
-    if (!session) {
+  try {
+    const intervention = await api.getIntervention(id);
+    if (!intervention) {
        return { error: "Sesi sudah dihapus atau tidak ditemukan." };
+    }
+    if (sessionUser.user.role === "KONSELOR" && intervention.counselor?.id !== sessionUser.user.id) {
+      return { error: "Unauthorized" };
     }
 
     await api.deleteIntervention(id);
